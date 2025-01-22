@@ -1,10 +1,11 @@
 import mongoose ,{Document,Schema} from "mongoose";
 
 interface EquipmentType extends Document{
-    name: String,
-    image:String,
-    quantity:Number,
-    description:String
+    name: string,
+    image:string,
+    quantity:number,
+    description:string,
+    isDeleted:boolean
 } 
 
 const Equipmentschema :Schema <EquipmentType>=new Schema({
@@ -23,6 +24,10 @@ const Equipmentschema :Schema <EquipmentType>=new Schema({
     description:{
         type:String,
         required:true
+    },
+    isDeleted:{
+        type:Boolean,
+        default:false
     }
 
 }

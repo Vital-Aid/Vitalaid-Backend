@@ -3,7 +3,8 @@ import mongoose ,{Document,Schema} from "mongoose";
 interface VolunteerType extends Document {
     name: string,
     phone:number,
-    gender:Enumerator
+    gender:Enumerator,
+    isDeleted:Boolean
 }
 
 const volunteerschema:Schema<VolunteerType>= new Schema(
@@ -19,6 +20,10 @@ const volunteerschema:Schema<VolunteerType>= new Schema(
         },
         gender:{
             type:String,enum:["male","female"]
+        },
+        isDeleted:{
+            type:Boolean,
+            default:false
         }
     },
     {timestamps:true}
