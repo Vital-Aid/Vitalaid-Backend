@@ -1,0 +1,38 @@
+import mongoose,{Document,Schema} from "mongoose";
+
+interface EventType extends Document{
+    title:string,
+    description:string,
+    date:Date,
+    image:string[],
+    location:string,
+    organization:string
+
+}
+
+const Eventschema:Schema<EventType>= new Schema({
+    title:{
+        type:String,
+        required:true
+    },
+    description:{
+        type:String,
+        required:true
+    },
+    date:{
+        type:Date
+    },
+    image:{
+        type:[String],
+    },
+    location:{
+        type:String,
+        required:true
+    },
+    organization:{
+        type:String
+    }
+})
+
+const Event =mongoose.model<EventType>("Event",Eventschema)
+export default Event
