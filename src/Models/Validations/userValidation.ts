@@ -8,9 +8,10 @@ export const userValidationType = z.object({
     originalProfile: z.string().optional(),
     thumbnail: z.string().optional(),
   }).optional(),
-  admin: z.boolean().default(false),
-  isDeleted: z.boolean().default(false),
-  phone: z.string().min(10),
+ 
+  admin: z.boolean().optional(),
+  isDeleted: z.boolean().optional(),
+  phone: z.string().min(10).optional(),
   createdAt: z.date().optional(),
 });
 

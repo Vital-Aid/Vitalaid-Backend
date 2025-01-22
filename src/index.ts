@@ -3,11 +3,11 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import CustomError from '../utils/CustomError';
 import cors from "cors"
-
-
-
-
+import routes from './Routes/authRoutes';
 dotenv.config();
+
+const authRoute=routes
+
 if (!process.env.MONGO_URI) {
   throw new Error("MONGO_URI is not defined in environment variables");
 }
@@ -30,7 +30,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use("/api/auth",authRoute)
 
 
 app.all('*',(req:Request,res:Response,next:NextFunction)=>{
