@@ -28,9 +28,9 @@ export const userRegistration = async(req:Request,res:Response,next:NextFunction
       msg: "User registered successfully. Please check your email for the OTP.",
       newUser,
   });
+
     
 }
-
 
 
 
