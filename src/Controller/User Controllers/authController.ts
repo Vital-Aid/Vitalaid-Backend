@@ -73,7 +73,7 @@ export const docterRegistration = async (
 export const userLogin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
    const { email, password } = req.body;
 
-   let user = await User.findOne({ email },{admin:false});
+   let user =await User.findOne({ email,admin:false });
    let userType = "User";
 
    if (!user) {
@@ -81,12 +81,13 @@ export const userLogin = async (req: Request, res: Response, next: NextFunction)
       userType = "Doctor";
    }
 
-  //  if(!user){
-  //   user=await
-  //  }
+   if(!user){
+    user=await User.findOne({ email,admin:true })
+    userType='Admin'
+   }
 
    if (!user) {
-      return next(new CustomError("Invalid email or password", 404))
+      return next(new CustomError("User not found", 404))
 
    }
 
@@ -100,7 +101,7 @@ export const userLogin = async (req: Request, res: Response, next: NextFunction)
       {
          id: user._id,
          email: user.email,
-         userType,
+         role:userType,
       },
       process.env.JWT_SECRET as string,
       { expiresIn: "1m" }
@@ -110,15 +111,31 @@ export const userLogin = async (req: Request, res: Response, next: NextFunction)
     {
        id: user._id,
        email: user.email,
-       userType,
+       role:userType,
+
     },
     process.env.JWT_SECRET as string,
     { expiresIn: "7d" }
  );
 
+ res.cookie('accessToken', token, {
+  httpOnly: true,
+  secure: true,
+  maxAge: 60 * 1000, // 1 minute
+  sameSite: 'none', 
+});
+res.cookie('refreshmentToken', refreshmentToken, {
+  httpOnly: true,
+  secure: true,
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  sameSite: 'none',
+});
+
+
+
    res.status(200).json({
       error: false,
-      message: "Login successful",
+      message:`${userType} Login successfully`,
       accessToken:token,
       refreshmentToken:refreshmentToken,
       user: {
