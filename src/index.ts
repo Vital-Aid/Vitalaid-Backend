@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import CustomError from '../utils/CustomError';
 import cors from "cors"
 import routes from './Routes/authRoutes';
+import docterRouts from "./Routes/doctorRoutes"
 dotenv.config();
 
 const authRoute=routes
@@ -31,7 +32,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth",authRoute)
-
+app.use("/api/doctors",docterRouts)
 
 app.all('*',(req:Request,res:Response,next:NextFunction)=>{
   const err=new CustomError(`cannot ${req.method} ${req.originalUrl}`,404)
