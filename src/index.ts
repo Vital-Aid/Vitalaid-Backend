@@ -5,6 +5,7 @@ import CustomError from '../utils/CustomError';
 import cors from "cors"
 import routes from './Routes/authRoutes';
 import docterRouts from "./Routes/doctorRoutes"
+import cookieParser from 'cookie-parser';
 dotenv.config();
 
 const authRoute=routes
@@ -30,6 +31,7 @@ const corsOptions = {
  
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth",authRoute)
 app.use("/api/doctors",docterRouts)
