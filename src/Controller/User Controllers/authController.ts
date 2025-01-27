@@ -121,15 +121,22 @@ export const userLogin = async (req: Request, res: Response, next: NextFunction)
  res.cookie('accessToken', token, {
   httpOnly: true,
   secure: true,
-  maxAge: 60 * 1000, // 1 minute
+  maxAge: 60 * 1000, 
   sameSite: 'none', 
 });
 res.cookie('refreshmentToken', refreshmentToken, {
   httpOnly: true,
   secure: true,
-  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  maxAge: 7 * 24 * 60 * 60 * 1000, 
   sameSite: 'none',
 });
+
+res.cookie(`user`, userType, {
+   httpOnly: true,
+   secure: true,
+   maxAge: 7 * 24 * 60 * 60 * 1000, 
+   sameSite: 'none',
+ });
 
 
 
@@ -143,6 +150,11 @@ res.cookie('refreshmentToken', refreshmentToken, {
          name: user.name,
          email: user.email,
          role:userType,
+         profileImage:{
+            originalProfile:user.profileImage?.originalProfile,
+            thumbnail:user.profileImage?.thumbnail
+          },
+          phone:user.phone
       },
    });
 };
