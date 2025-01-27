@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import Doctor from "../../Models/Doctor";
-import CustomError from "../../../utils/CustomError";
+import CustomError from "../../utils/CustomError";
 
 export const getDoctors=async(req:Request,res:Response,next:NextFunction)=>{
  

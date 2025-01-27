@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import Doctor from "../../Models/Doctor";
 import bcrypt from "bcrypt";
 import dotenv from 'dotenv';
-import CustomError from "../../../utils/CustomError";
+import CustomError from "../../utils/CustomError";
 dotenv.config();
 
 export const userRegistration = async (
