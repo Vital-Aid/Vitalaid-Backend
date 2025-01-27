@@ -1,23 +1,21 @@
-import express from 'express';
+import { Request, Response } from 'express';
 import multer from 'multer';
 import multerS3 from 'multer-s3';
-import aws from 'aws-sdk';
+import { S3Client } from '@aws-sdk/client-s3';
 
-const app = express();
-
-
-aws.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+const s3 = new S3Client({
   region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+  },
 });
-
-const s3 = new aws.S3();
 
 export const upload = multer({
   storage: multerS3({
     s3,
-    bucket: process.env.S3_BUCKET_NAME,
+    bucket: process.env.S3_BUCKET_NAME||"vitalaidnsr",
+
     metadata: (req, file, cb) => {
       cb(null, { fieldName: file.fieldname });
     },
@@ -38,5 +36,7 @@ export const upload = multer({
     }
   },
 });
+
+
 
 

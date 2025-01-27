@@ -1,7 +1,7 @@
 import express, { Application,Request,Response,NextFunction} from 'express';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-import CustomError from '../utils/CustomError';
+import CustomError from './utils/CustomError';
 import cors from "cors"
 import routes from './Routes/authRoutes';
 import docterRouts from "./Routes/doctorRoutes"

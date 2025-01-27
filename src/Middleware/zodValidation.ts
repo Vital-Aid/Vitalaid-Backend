@@ -1,6 +1,6 @@
 import {Request,Response,NextFunction} from 'express'
 import {type AnyZodObject,ZodError, Schema} from 'zod'
-import CustomError from '../../utils/CustomError'
+import CustomError from '../utils/CustomError'
 
 export function validateData(schema:AnyZodObject){
   return (req:Request,res:Response,next:NextFunction)=>{

@@ -1,6 +1,6 @@
 import { Jwt } from 'jsonwebtoken';
 import jwt from 'jsonwebtoken';
-import CustomError from "../../utils/CustomError";
+import CustomError from "../utils/CustomError";
 import { Request,Response,NextFunction } from "express";
 
 
