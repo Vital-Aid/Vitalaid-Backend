@@ -26,3 +26,11 @@ export const getEventById=async(req:Request,res:Response,next:NextFunction)=>{
     }
     res.status(200).json({error:'false',event:event})
 }
+
+// export const editEvents=async(req:Request,res:Response,next:NextFunction)=>{
+//     const {id}=req.params
+//     const{organization,location,image,date,description,title}=req.body
+//     const eventData = { organization, location, image, date, description, title };
+//     const editedEvent=await Event.findByIdAndUpdate(id,eventData,{new:true})
+//     res.status(200).json({errpr:'false',event:editedEvent})
+// }
