@@ -3,7 +3,7 @@ import mongoose,{Document,Schema} from "mongoose";
 interface EventType extends Document{
     title:string,
     description:string,
-    date:Date,
+    date:string,
     image:string[],
     location:string,
     organization:string
@@ -20,7 +20,7 @@ const Eventschema:Schema<EventType>= new Schema({
         required:true
     },
     date:{
-        type:Date
+        type:String,
     },
     image:{
         type:[String],

@@ -6,6 +6,7 @@ import cors from "cors"
 import routes from './Routes/authRoutes';
 import docterRouts from "./Routes/doctorRoutes"
 import cookieParser from 'cookie-parser';
+import eventRoutes from './Routes/EventRoutes';
 dotenv.config();
 
 const authRoute=routes
@@ -36,6 +37,7 @@ app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth",authRoute)
 app.use("/api/doctors",docterRouts)
+app.use("/api/events",eventRoutes)
 
 app.all('*',(req:Request,res:Response,next:NextFunction)=>{
   const err=new CustomError(`cannot ${req.method} ${req.originalUrl}`,404)
