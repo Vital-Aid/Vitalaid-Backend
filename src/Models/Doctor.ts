@@ -18,6 +18,7 @@ const DoctorSchema: Schema<DoctorType> = new Schema(
   {
     name: {
       type: String,
+      required:true
     },
     email: {
       type: String,
@@ -39,17 +40,9 @@ const DoctorSchema: Schema<DoctorType> = new Schema(
           "https://i.pinimg.com/736x/ed/fe/67/edfe6702e44cfd7715a92390c7d8a418.jpg",
       },
     },
-    admin: {
-      type: Boolean,
-      default: false,
-    },
     phone: {
       type: String,
       required: true,
-    },
-    isVerified: {
-      type: Boolean,
-      default: false,
     },
     isDeleted: {
       type: Boolean,

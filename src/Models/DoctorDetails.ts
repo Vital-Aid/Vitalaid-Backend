@@ -8,7 +8,7 @@ interface DrDetailsType extends Document {
     profileImage: string,
     description: string,
     address: string,
-    cirtificate: string[]
+    certificates: string[]
 }
 
 const DrDetailschema: Schema<DrDetailsType> = new Schema({
@@ -37,7 +37,7 @@ const DrDetailschema: Schema<DrDetailsType> = new Schema({
         type: String,
         required: true
     },
-    cirtificate: {
+    certificates: {
         type: [String]
     }
 
