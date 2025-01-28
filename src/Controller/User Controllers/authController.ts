@@ -30,10 +30,10 @@ export const userRegistration = async (
 
    // await sendEmail(email,'Verify Your Email with OTP',emailTemplate)
    res.status(200).json({
-      errorcode: 0,
+      errorcode: 0,//dd
       status: true,
       msg: "User registered successfully. Please check your email for the OTP.",
-      newUser,
+      data:newUser,
    });
 };
 
