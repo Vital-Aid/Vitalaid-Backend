@@ -3,12 +3,18 @@ import tryCatch from "../utils/tryCatch";
 import { getDoctersById, getDoctors } from "../Controller/User Controllers/doctorController";
 import { adminAuth, doctorAuth, userAuth } from "../Middleware/authMiddleware";
 import { upload } from "../Middleware/ImageUpload";
+import { addDetails, deleteDr, editDetails, getdrDetails } from "../Controller/Admin controllers/doctorControll";
 
 
-const routes=express.Router()
+const routes = express.Router()
 
 routes
-.get('/getdoctors',doctorAuth,tryCatch(getDoctors))
-.get('/getDoctersById/:_id',doctorAuth,tryCatch(getDoctersById))
+    .get('/getdoctors', doctorAuth, tryCatch(getDoctors))
+    .get('/getDoctersById/:_id', doctorAuth, tryCatch(getDoctersById))
+    .post("/postdetailsof/:id", adminAuth,upload.fields([{ name: "profileImage", maxCount: 1 }, { name: "certificates", maxCount: 5 }]), tryCatch(addDetails))
+    .get("/getDetailsof/:id",adminAuth,tryCatch(getdrDetails))
+    .get("/getdetail/id" ,userAuth, tryCatch(getdrDetails))
+    .put("/editdetailsof/:id",adminAuth,upload.fields([{ name: "profileImage", maxCount: 1 }, { name: "certificates", maxCount: 5 }]),tryCatch(editDetails))
+    .put("/deletedr/:id",adminAuth,tryCatch(deleteDr))
 
 export default routes

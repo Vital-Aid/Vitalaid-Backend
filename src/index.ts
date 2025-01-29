@@ -47,6 +47,7 @@ app.all('*',(req:Request,res:Response,next:NextFunction)=>{
   const err=new CustomError(`cannot ${req.method} ${req.originalUrl}`,404)
   next(err)
 })
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

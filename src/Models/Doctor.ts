@@ -4,13 +4,7 @@ interface DoctorType extends Document {
   name?: string;
   email: string;
   password: string;
-  profileImage?: {
-    originalProfile?: string;
-    thumbnail?: string;
-  };
-  admin: boolean;
   phone: string;
-  isVerified: boolean;
   isDeleted: boolean;
 }
 
@@ -27,18 +21,6 @@ const DoctorSchema: Schema<DoctorType> = new Schema(
     password: {
       type: String,
       required: true,
-    },
-    profileImage: {
-      originalProfile: {
-        type: String,
-        default:
-          "https://i.pinimg.com/736x/ed/fe/67/edfe6702e44cfd7715a92390c7d8a418.jpg",
-      },
-      thumbnail: {
-        type: String,
-        default:
-          "https://i.pinimg.com/736x/ed/fe/67/edfe6702e44cfd7715a92390c7d8a418.jpg",
-      },
     },
     phone: {
       type: String,
