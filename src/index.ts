@@ -7,7 +7,8 @@ import routes from './Routes/authRoutes';
 import docterRouts from "./Routes/doctorRoutes"
 import cookieParser from 'cookie-parser';
 import eventRoutes from './Routes/EventRoutes';
-import userRoutes from './Routes/userRoutes'
+import equipmentRoute from './Routes/EquipmentRoute'
+import errorHandler from './Middleware/ErrorHandler';
 dotenv.config();
 
 const authRoute=routes
@@ -39,7 +40,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth",authRoute)
 app.use("/api/doctors",docterRouts)
 app.use("/api/events",eventRoutes)
-app.use("/api/users",userRoutes)
+app.use("/api/equipment",equipmentRoute)
+app.use(errorHandler)
 
 app.all('*',(req:Request,res:Response,next:NextFunction)=>{
   const err=new CustomError(`cannot ${req.method} ${req.originalUrl}`,404)

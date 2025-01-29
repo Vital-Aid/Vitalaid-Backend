@@ -24,14 +24,14 @@ const userAuth=(req:Request,res:Response,next:NextFunction):void=>{
     const token=authHeader &&authHeader.startsWith('Bearer')?authHeader.split(' ')[1]:null
 
     if (!token){
-        const refreshmentToken=req.cookies?.refreshmentToken
+        const refreshToken=req.cookies?.refreshmentToken
        
         
-        if(!refreshmentToken){
+        if(!refreshToken){
             return next(new CustomError('Refreshment token and access token are not available.',404))
         }
 
-        const decoded=jwt.verify(refreshmentToken,process.env.JWT_SECRET as string)as DecodedToken
+        const decoded=jwt.verify(refreshToken,process.env.JWT_SECRET as string)as DecodedToken
         const newToken=jwt.sign({id:decoded.id,email:decoded.email,role:decoded.role},process.env.JWT_SECRET as string,{expiresIn:'1m'})
         res.cookie('accessToken',newToken,{
             httpOnly: true,
@@ -49,14 +49,14 @@ const userAuth=(req:Request,res:Response,next:NextFunction):void=>{
             req.user=decoded
             return next()
         } catch (error) {
-            const refreshmentToken=req.cookies?.refreshmentToken
+            const refreshToken=req.cookies?.refreshToken
             
             
-            if(!refreshmentToken){
+            if(!refreshToken){
                 return next(new CustomError('Refreshment token and access token are not available.',404))
             }
     
-            const decoded=jwt.verify(refreshmentToken,process.env.JWT_SECRET as string)as DecodedToken
+            const decoded=jwt.verify(refreshToken,process.env.JWT_SECRET as string)as DecodedToken
             const newToken=jwt.sign({id:decoded.id,email:decoded.email,role:decoded.role},process.env.JWT_SECRET as string)
             res.cookie('accessToken',newToken,{
                 httpOnly: true,

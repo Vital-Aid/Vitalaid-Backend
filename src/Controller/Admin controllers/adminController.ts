@@ -1,6 +1,6 @@
 import { Response, Request, NextFunction } from 'express'
-import Event from '../Models/Event'
-import CustomError from '../utils/CustomError'
+import Event from '../../Models/Event'
+import CustomError from '../../utils/CustomError'
 
 
 interface file extends Express.Multer.File {
@@ -13,7 +13,7 @@ interface file extends Express.Multer.File {
     key: string;
     acl: string;
     contentType: string;
-    location: string;  // Add location to the file type
+    location: string;  
 };
 
 
@@ -52,5 +52,16 @@ export const getEventById = async (req: Request, res: Response, next: NextFuncti
     if (!event) {
         return next(new CustomError('event not found', 404))
     }
-    res.status(200).json({ error: 'false', event: event })
+    res.status(200).json({error:'false',event:event})
 }
+
+export const editEvents=async(req:Request,res:Response,next:NextFunction)=>{
+  
+    const {id}=req.params
+    const{organization,location,date,description,title}=req.body
+    const image = (req.file as file)?.location;
+    const eventData = { organization, location, date, description, title,image };
+    const editedEvent=await Event.findByIdAndUpdate(id,eventData,{new:true})
+    res.status(200).json({error:'false',message:'event edited successfully',event:editedEvent})
+}
+
