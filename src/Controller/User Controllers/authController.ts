@@ -288,11 +288,8 @@ export const doctorlogin=async(req:Request,res:Response,next:NextFunction)=>{
             name: doctor.name,
             email: doctor.email,
             role:'Doctor',
-            profileImage:{
-               originalProfile:doctor.profileImage?.originalProfile,
-               thumbnail:doctor.profileImage?.thumbnail
-             },
-             phone:doctor.phone
+
+            phone:doctor.phone
          },
       });
 }

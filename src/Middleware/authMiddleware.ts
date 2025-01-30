@@ -22,6 +22,8 @@ interface DecodedToken {
 const userAuth=(req:Request,res:Response,next:NextFunction):void=>{
     const authHeader=req.headers['authorization']
     const token=authHeader &&authHeader.startsWith('Bearer')?authHeader.split(' ')[1]:null
+   
+    
 
     if (!token){
         const refreshToken=req.cookies?.refreshmentToken
@@ -72,9 +74,13 @@ const userAuth=(req:Request,res:Response,next:NextFunction):void=>{
 }
 
 const adminAuth=(req:Request,res:Response,next:NextFunction):void=>{
-    console.log('Admin auth middleware');
+    
     userAuth(req,res,()=>{
+       
+        
         if(req.user &&req.user.role=='Admin'){
+           
+            
             return next()
         }else{
             return next(new CustomError('You are not authorized', 403));
