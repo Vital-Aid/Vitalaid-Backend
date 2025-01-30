@@ -18,7 +18,11 @@ interface file extends Express.Multer.File {
 
 export const addEquipment=async(req:Request,res:Response,next:NextFunction)=>{
     const {description,quantity,name}=req.body
+    console.log("ssss",req.body);
+    
     const image= (req.file as file)?.location;
+    console.log(req.file);
+    
     if(!image){
         return next(new CustomError('image not found',404))
     }
@@ -30,7 +34,7 @@ export const addEquipment=async(req:Request,res:Response,next:NextFunction)=>{
 
 
 export const getAllEquipments=async(req:Request,res:Response,next:NextFunction)=>{
-    const equipments=await Equiment.find()
+    const equipments=await Equiment.find({isDeleted:false})
     if(!equipments){
         return next(new CustomError('equipments not found',404))
     }
@@ -58,4 +62,13 @@ export const editEquipments=async(req:Request,res:Response,next:NextFunction)=>{
     const updateEquipment=await Equiment.findByIdAndUpdate(id,equipmentData,{new:true})
     
     res.status(200).json({error:false,message:'aquipment added successfully',data:updateEquipment})
+}
+
+export const deleteEquipments=async(req:Request,res:Response,next:NextFunction)=>{
+    const{id}=req.params
+    const deletedeuipment=await Equiment.findByIdAndUpdate(id,{isDeleted:true},{ new: true } )
+    if(!deletedeuipment){
+        return next (new CustomError('equipment not found',404))
+    }
+    res.status(200).json({error:false,message:'equipment updated',data:deletedeuipment})
 }
