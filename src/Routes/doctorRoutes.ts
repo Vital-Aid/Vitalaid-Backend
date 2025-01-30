@@ -9,8 +9,8 @@ import { addDetails, deleteDr, editDetails, getdrDetails } from "../Controller/A
 const routes = express.Router()
 
 routes
-    .get('/getdoctors', doctorAuth, tryCatch(getDoctors))
-    .get('/getDoctersById/:_id', doctorAuth, tryCatch(getDoctersById))
+    .get('/getdoctors', adminAuth, tryCatch(getDoctors))
+    .get('/getDoctersById/:id', doctorAuth, tryCatch(getDoctersById))
     .post("/postdetailsof/:id", adminAuth,upload.fields([{ name: "profileImage", maxCount: 1 }, { name: "certificates", maxCount: 5 }]), tryCatch(addDetails))
     .get("/getDetailsof/:id",adminAuth,tryCatch(getdrDetails))
     .get("/getdetail/id" ,userAuth, tryCatch(getdrDetails))
