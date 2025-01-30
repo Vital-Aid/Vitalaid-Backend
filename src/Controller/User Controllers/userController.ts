@@ -1,0 +1,51 @@
+import { Request,Response,NextFunction } from "express";
+import User from "../../Models/UserModel";
+import CustomError from "../../utils/CustomError";
+
+export const getUsers=async(req:Request,res:Response,next:NextFunction)=>{
+
+    const users=await User.find({isDeleted:false,blocked:false})
+    if(!users){
+        return next(new CustomError('users not found',404))
+    }
+
+    res.status(200).json({users:users})
+}
+
+export const getblockedUsers=async(req:Request,res:Response,next:NextFunction)=>{
+
+    const users=await User.find({isDeleted:false,blocked:true})
+    if(!users){
+        return next(new CustomError('users not found',404))
+    }
+
+    res.status(200).json({users:users})
+}
+
+
+export const getUserById=async(req:Request,res:Response,next:NextFunction)=>{
+
+   const{_id}=req.params;
+   const user=await User.findById(_id)
+   if(!user){
+    return next(new CustomError("user not found",404))
+
+   }
+   res.status(200).json({user:user})
+}
+export const blockUser=async(req:Request,res:Response,next:NextFunction)=>{
+    const{_id}=req.params;
+    console.log('req.params',req.params)
+    const blockedUser=await User.findById(_id)
+    if (!blockedUser) {
+        return next(new CustomError("blockeUser not found"))
+    }
+    blockedUser.blocked = !blockedUser.blocked;
+
+    await blockedUser.save();
+
+    res.status(200).json({
+      message: blockedUser.blocked ? "User has been blocked" : "User has been unblocked",
+      user: blockedUser,
+    });
+}

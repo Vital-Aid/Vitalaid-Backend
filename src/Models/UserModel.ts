@@ -1,5 +1,5 @@
+import { bool } from "aws-sdk/clients/signer";
 import mongoose, { Document, Schema, model } from "mongoose";
-import { boolean } from "zod";
 
 interface UserType extends Document {
   name?: string;
@@ -14,6 +14,7 @@ interface UserType extends Document {
   isVerified: boolean
   isDeleted: boolean;
   createdAt: Date;
+  blocked:boolean
 }
 
 const userSchema: Schema<UserType> = new Schema(
@@ -30,6 +31,7 @@ const userSchema: Schema<UserType> = new Schema(
     phone: { type: String, required: true, },
     isVerified: { type: Boolean, required: true, default: false },
     isDeleted: { type: Boolean, default: false },
+    blocked: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

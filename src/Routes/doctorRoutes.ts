@@ -8,7 +8,7 @@ import { upload } from "../Middleware/ImageUpload";
 const routes=express.Router()
 
 routes
-.get('/getdoctors',doctorAuth,tryCatch(getDoctors))
-.get('/getDoctersById/:_id',doctorAuth,tryCatch(getDoctersById))
+.get('/getdoctors',tryCatch(getDoctors))
+.get('/getDoctersById/:_id',tryCatch(getDoctersById))
 
 export default routes
