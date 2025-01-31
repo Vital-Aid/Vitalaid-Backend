@@ -23,13 +23,12 @@ export const addEvent = async (req: Request, res: Response, next: NextFunction):
 
     const { organization, location, date, description, title } = req.body;
 
-    // Access the image URL from req.file
     const image = (req.file as file)?.location;
 
     console.log("Image URL:", image);
 
     if (!image) {
-      res.status(400).json({ error: true, message: 'Image is required' });
+        return next(new CustomError('image is required', 404))
     }
 
     const newEvent = new Event({ title, organization, location, image, date, description });
