@@ -245,7 +245,7 @@ export const doctorlogin=async(req:Request,res:Response,next:NextFunction)=>{
          { expiresIn: "1m" }
       );
      
-      const refreshmentToken = jwt.sign(
+      const refreshToken = jwt.sign(
        {
           id: doctor._id,
           email: doctor.email,
@@ -262,7 +262,7 @@ export const doctorlogin=async(req:Request,res:Response,next:NextFunction)=>{
      maxAge: 60 * 1000, 
      sameSite: 'none', 
    });
-   res.cookie('refreshToken', refreshmentToken, {
+   res.cookie('refreshToken', refreshToken, {
      httpOnly: true,
      secure: true,
      maxAge: 7 * 24 * 60 * 60 * 1000, 
@@ -281,8 +281,6 @@ export const doctorlogin=async(req:Request,res:Response,next:NextFunction)=>{
       res.status(200).json({
          error: false,
          message:`Doctor Login successfully`,
-         accessToken:token,
-         refreshmentToken:refreshmentToken,
          user: {
             id: doctor._id,
             name: doctor.name,
@@ -353,8 +351,6 @@ export const adminlogin=async(req:Request,res:Response,next:NextFunction)=>{
       res.status(200).json({
          error: false,
          message:`Admin Login successfully`,
-         accessToken:token,
-         refreshmentToken:refreshmentToken,
          user: {
             id: user._id,
             name: user.name,
