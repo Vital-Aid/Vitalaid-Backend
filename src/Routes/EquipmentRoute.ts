@@ -7,9 +7,9 @@ import { addEquipment, deleteEquipments, editEquipments, getAllEquipments, getEq
 
 
 equipmentRoute
-.post('/addequipment',upload.single("image"),tryCatch(addEquipment))
+.post('/addequipment',adminAuth,upload.single("image"),tryCatch(addEquipment))
 .get('/getequipments',adminAuth,tryCatch(getAllEquipments))
 .get('/getequipment/:id',tryCatch(getEquipmentBYId))
-.put('/editEquipment/:id',upload.single('image'),tryCatch(editEquipments))
-.put('/deleteEquipment/:id',tryCatch(deleteEquipments))
+.put('/editEquipment/:id',adminAuth,upload.single('image'),tryCatch(editEquipments))
+.put('/deleteEquipment/:id',adminAuth,tryCatch(deleteEquipments))
 export default equipmentRoute
