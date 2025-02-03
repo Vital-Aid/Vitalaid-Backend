@@ -276,3 +276,9 @@ export const adminlogin=async(req:Request,res:Response,next:NextFunction)=>{
       });
 }
 
+export const logout=async(req:Request,res:Response,next:NextFunction)=>{
+   res.clearCookie('user')
+   res.clearCookie('refreshToken')
+   res.clearCookie('accessToken')
+   res.json({ message: 'Logged out successfully' });
+}

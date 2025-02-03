@@ -2,7 +2,7 @@ import { UserValidationSchema, userValidationType } from './../Models/Validation
 import express from "express";
 import { validateData } from "../Middleware/zodValidation";
 import tryCatch from "../utils/tryCatch";
-import { adminlogin, docterRegistration, doctorlogin, userlogin, userRegistration } from '../Controller/User Controllers/authController';
+import { adminlogin, docterRegistration, doctorlogin, logout, userlogin, userRegistration } from '../Controller/User Controllers/authController';
 import { adminAuth } from '../Middleware/authMiddleware';
 
 
@@ -14,5 +14,6 @@ routes
 .post('/userlogin',tryCatch(userlogin))
 .post('/doctorlogin',tryCatch(doctorlogin))
 .post('/adminlogin',tryCatch(adminlogin))
+.delete('/logout',adminAuth,tryCatch(logout))
 
 export default routes
