@@ -9,6 +9,7 @@ import cookieParser from 'cookie-parser';
 import eventRoutes from './Routes/EventRoutes';
 import userRoutes from './Routes/userRoutes'
 import equipmentRoute from './Routes/EquipmentRoute';
+import donnersRoutes from './Routes/donorsRoutes';
 dotenv.config();
 
 
@@ -43,6 +44,8 @@ app.use("/api/doctors",docterRouts)
 app.use("/api/events",eventRoutes)
 app.use("/api/equipment",equipmentRoute)
 app.use("/api/users",userRoutes)
+app.use("/api/donors",donnersRoutes)
+
 
 app.all('*',(req:Request,res:Response,next:NextFunction)=>{
   const err=new CustomError(`cannot ${req.method} ${req.originalUrl}`,404)

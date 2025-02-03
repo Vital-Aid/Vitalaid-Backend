@@ -23,7 +23,6 @@ export const addEvent = async (req: Request, res: Response, next: NextFunction):
 
     const { organization, location, date, description, title } = req.body;
 
-    // Access the image URL from req.file
     const image = (req.file as file)?.location;
 
     console.log("Image URL:", image);
@@ -39,7 +38,7 @@ export const addEvent = async (req: Request, res: Response, next: NextFunction):
 }
 
 export const getEvents = async (req: Request, res: Response, next: NextFunction) => {
-    const events = await Event.find()
+    const events = await Event.find({ isDeleted: false });
     if (!events) {
         return next(new CustomError("Events not found", 404))
     }
@@ -65,3 +64,18 @@ export const editEvents=async(req:Request,res:Response,next:NextFunction)=>{
     res.status(200).json({error:'false',message:'event edited successfully',event:editedEvent})
 }
 
+export const deleteEvent=async (req:Request,res:Response,next:NextFunction)=>{
+
+    const { id } = req.params;
+        const deleteEvent = await Event.findById(id);
+
+        if (!deleteEvent) {
+            return next(new CustomError("Event not found", 404));
+        }
+
+        deleteEvent.isDeleted = !deleteEvent.isDeleted; 
+        await deleteEvent.save();
+
+        res.status(200).json({ error: false, event: deleteEvent });
+
+}
