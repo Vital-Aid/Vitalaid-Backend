@@ -40,7 +40,6 @@ export const docterRegistration = async (
 ) => {
    const { name, email, password, phone } = req.body;
    const hashedPassword = await bcrypt.hash(password, 6);
-
   
    const newDoctor = await new Doctor({
       name,
@@ -49,7 +48,8 @@ export const docterRegistration = async (
       phone,
    });
    await newDoctor.save();
-  
+   
+   
    res.status(200).json({
       error:false,
       status: true,
@@ -59,95 +59,6 @@ export const docterRegistration = async (
 };
 
 
-
-// export const userLogin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-//    const { email, password } = req.body;
-
-//    let user =await User.findOne({ email,admin:false });
-//    let userType = "User";
-
-//    if (!user) {
-//       user = await Doctor.findOne({ email });
-//       userType = "Doctor";
-//    }
-
-//    if(!user){
-//     user=await User.findOne({ email,admin:true })
-//     userType='Admin'
-//    }
-
-//    if (!user) {
-//       return next(new CustomError("User not found", 404))
-
-//    }
-
-//    const isPasswordValid = await bcrypt.compare(password, user.password);
-//    if (!isPasswordValid) {
-//       return next(new CustomError("Invalid email or password", 404));
-
-//    }
-
-//    const token = jwt.sign(
-//       {
-//          id: user._id,
-//          email: user.email,
-//          role:userType,
-//       },
-//       process.env.JWT_SECRET as string,
-//       { expiresIn: "1m" }
-//    );
-  
-//    const refreshmentToken = jwt.sign(
-//     {
-//        id: user._id,
-//        email: user.email,
-//        role:userType,
-
-//     },
-//     process.env.JWT_SECRET as string,
-//     { expiresIn: "7d" }
-//  );
-
-//  res.cookie('accessToken', token, {
-//   httpOnly: true,
-//   secure: true,
-//   maxAge: 60 * 1000, 
-//   sameSite: 'none', 
-// });
-// res.cookie('refreshmentToken', refreshmentToken, {
-//   httpOnly: true,
-//   secure: true,
-//   maxAge: 7 * 24 * 60 * 60 * 1000, 
-//   sameSite: 'none',
-// });
-
-// res.cookie(`user`, userType, {
-//    httpOnly: true,
-//    secure: true,
-//    maxAge: 7 * 24 * 60 * 60 * 1000, 
-//    sameSite: 'none',
-//  });
-
-
-
-//    res.status(200).json({
-//       error: false,
-//       message:`${userType} Login successfully`,
-//       accessToken:token,
-//       refreshmentToken:refreshmentToken,
-//       user: {
-//          id: user._id,
-//          name: user.name,
-//          email: user.email,
-//          role:userType,
-//          profileImage:{
-//             originalProfile:user.profileImage?.originalProfile,
-//             thumbnail:user.profileImage?.thumbnail
-//           },
-//           phone:user.phone
-//       },
-//    });
-// };
 
 export const userlogin=async(req:Request,res:Response,next:NextFunction)=>{
    const {email,password}=req.body

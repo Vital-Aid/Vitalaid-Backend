@@ -10,7 +10,7 @@ const routes=express.Router()
 
 routes
 .post('/register',validateData(userValidationType),tryCatch(userRegistration))
-.post('/registerDocter',validateData(userValidationType),tryCatch(docterRegistration))
+.post('/registerDocter',adminAuth,validateData(userValidationType),tryCatch(docterRegistration))
 .post('/userlogin',tryCatch(userlogin))
 .post('/doctorlogin',tryCatch(doctorlogin))
 .post('/adminlogin',tryCatch(adminlogin))

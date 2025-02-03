@@ -3,7 +3,7 @@ import { Response, Request, NextFunction } from "express";
 import CustomError from "../../utils/CustomError";
 import DrDetails from "../../Models/DoctorDetails";
 
-interface file extends Express.Multer.File {
+interface FileWithLocation extends Express.Multer.File {
     fieldname: string;
     originalname: string;
     encoding: string;
@@ -42,22 +42,24 @@ export const viewDRbyId = async (req: Request, res: Response, next: NextFunction
 
 export const addDetails = async (req: Request, res: Response, next: NextFunction) => {
 
-    const doctor = req.params.id;
-    const { qualification, specialization, availablity, description, address } = req.body;
+    const { doctor, qualification, specialization, availablity, description, address } = req.body
 
-    if (!qualification || !specialization || !availablity || !description || !address) {
+    if (!doctor || !qualification || !specialization || !availablity || !description || !address) {
         return next(new CustomError("All required fields must be provided", 400));
     }
 
-    const files = req.files as { [fieldname: string]: file[] };
+    const files = req.files as { [fieldname: string]: FileWithLocation[] }
 
-    const profileImage = files["profileImage"]?.[0]?.location || null;
+    const profileImage = files["profileImage"]?.[0]?.location;
+
     const certificates = files["certificates"]?.map(file => file.location) || [];
+    console.log("cirtificate", certificates);
+
 
     const newDetails = new DrDetails({
         doctor,
-        qualification,
-        specialization,
+        qualification: JSON.parse(qualification),
+        specialization: JSON.parse(specialization),
         availablity,
         profileImage,
         description,
@@ -74,14 +76,19 @@ export const addDetails = async (req: Request, res: Response, next: NextFunction
 
 };
 
+
 export const getdrDetails = async (req: Request, res: Response, next: NextFunction) => {
-    const Details = await DrDetails.findOne({ doctor: req.params.id }).populate("doctor", "name email phone")
+
+
+    const Details = await DrDetails.find({ doctor: req.params.id }).populate("doctor", "name email phone")
     if (!Details) {
         return next(new CustomError("there is no details find about this doctor",404))
     }
+
+
     res.status(200).json({
         Message: "Doctor details",
-        Data: Details
+        data: Details
     })
 }
 
@@ -94,26 +101,29 @@ export const editDetails = async (req: Request, res: Response, next: NextFunctio
         return next(new CustomError("All required fields must be provided", 400));
     }
 
-    const files = req.files as { [fieldname: string]: file[] };
+    const files = req.files as { [fieldname: string]: FileWithLocation[] };
 
     const existingDetails = await DrDetails.findOne({ doctor });
     if (!existingDetails) {
         return next(new CustomError("Doctor details not found", 404));
     }
 
-    existingDetails.qualification = qualification;
-    existingDetails.specialization = specialization;
+    existingDetails.qualification = JSON.parse(qualification);
+    existingDetails.specialization =JSON.parse(specialization) ;
     existingDetails.availablity = availablity;
     existingDetails.description = description;
     existingDetails.address = address;
 
-    if (files["profileImage"]) {
-        existingDetails.profileImage = files["profileImage"]?.[0]?.location || '';
+    if (files["profileImage"] && files["profileImage"].length > 0) {
+        existingDetails.profileImage = files["profileImage"][0].location;
     }
 
-    if (files["certificates"]) {
-        existingDetails.certificates = files["certificates"].map(file => file.location) || [];
+    if (files["certificates"] && files["certificates"].length > 0) {
+        existingDetails.certificates = existingDetails.certificates.concat(
+            files["certificates"].map(file => file.location)
+        );
     }
+    
 
     await existingDetails.save();
 
@@ -121,6 +131,7 @@ export const editDetails = async (req: Request, res: Response, next: NextFunctio
         message: "Details updated successfully",
         data: existingDetails,
     });
+
 };
 
 export const deleteDr = async (req: Request, res: Response, next: NextFunction) => {
@@ -141,3 +152,4 @@ export const deleteDr = async (req: Request, res: Response, next: NextFunction) 
     });
 
 }
+

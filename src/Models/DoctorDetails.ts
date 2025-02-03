@@ -3,8 +3,8 @@ import mongoose, { Document, Schema } from "mongoose";
 interface DrDetailsType extends Document {
     doctor: mongoose.ObjectId,
     qualification: string[],
-    specialization: string,
-    availablity: string[],
+    specialization: string[],
+    availablity: string,
     profileImage: string,
     description: string,
     address: string,
@@ -21,11 +21,11 @@ const DrDetailschema: Schema<DrDetailsType> = new Schema({
         required: true
     },
     specialization: {
-        type: String,
+        type: [String],
         required: true
     },
     availablity: {
-        type: [String]
+        type: String
     },
     profileImage: {
         type: String
