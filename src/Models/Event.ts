@@ -6,33 +6,38 @@ interface EventType extends Document{
     date:string,
     image:string[],
     location:string,
-    organization:string
-
+    organization:string,
+    isDeleted: boolean; 
 }
 
-const Eventschema:Schema<EventType>= new Schema({
-    title:{
-        type:String,
-        required:true
+const Eventschema: Schema<EventType> = new Schema({
+    title: {
+        type: String,
+        required: true,
     },
-    description:{
-        type:String,
-        required:true
+    description: {
+        type: String,
+        required: true,
     },
-    date:{
-        type:String,
+    date: {
+        type: String,
     },
-    image:{
-        type:[String],
+    image: {
+        type: [String],
     },
-    location:{
-        type:String,
-        required:true
+    location: {
+        type: String,
+        required: true,
     },
-    organization:{
-        type:String
-    }
-})
+    organization: {
+        type: String,
+    },
+    isDeleted: {
+        type: Boolean, 
+        default: false,
+    },
+});
+
 
 const Event =mongoose.model<EventType>("Event",Eventschema)
 export default Event

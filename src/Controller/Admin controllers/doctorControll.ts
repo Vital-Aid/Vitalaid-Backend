@@ -19,7 +19,7 @@ interface FileWithLocation extends Express.Multer.File {
 export const viewalldoctors = async (req: Request, res: Response, next: NextFunction) => {
     const AllDoctors = await Doctor.find({ isDeleted: false })
     if (!AllDoctors) {
-        return next(new CustomError("no Doctors found"))
+        return next(new CustomError("no Doctors found",404))
     }
     res.status(200).json({
         status: 200,
@@ -31,7 +31,7 @@ export const viewalldoctors = async (req: Request, res: Response, next: NextFunc
 export const viewDRbyId = async (req: Request, res: Response, next: NextFunction) => {
     const doctor = await Doctor.findById(req.params.id)
     if (!doctor) {
-        return next(new CustomError("There is any doctor found with this ID"))
+        return next(new CustomError("There is any doctor found with this ID",404))
     }
     res.status(200).json({
         message: "One doctor data",
@@ -82,7 +82,7 @@ export const getdrDetails = async (req: Request, res: Response, next: NextFuncti
 
     const Details = await DrDetails.find({ doctor: req.params.id }).populate("doctor", "name email phone")
     if (!Details) {
-        return next(new CustomError("there is no details find about this doctor"))
+        return next(new CustomError("there is no details find about this doctor",404))
     }
 
 

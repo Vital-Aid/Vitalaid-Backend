@@ -1,9 +1,11 @@
 import mongoose ,{Document,Schema} from "mongoose";
 
+
 interface VolunteerType extends Document {
     name: string,
     phone:number,
     gender:Enumerator,
+    image:string,
     isDeleted:Boolean
 }
 
@@ -20,6 +22,11 @@ const volunteerschema:Schema<VolunteerType>= new Schema(
         },
         gender:{
             type:String,enum:["male","female"]
+        },
+        image:{
+            type:String,
+            require:true
+
         },
         isDeleted:{
             type:Boolean,
