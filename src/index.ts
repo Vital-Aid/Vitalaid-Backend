@@ -11,6 +11,7 @@ import userRoutes from './Routes/userRoutes'
 import equipmentRoute from './Routes/EquipmentRoute';
 import volunteerRoute from './Routes/volonteersRoutes';
 import errorHandler from './Middleware/ErrorHandler';
+import donnersRoutes from './Routes/donorsRoutes';
 dotenv.config();
 
 
@@ -47,6 +48,8 @@ app.use("/api/events",eventRoutes)
 app.use("/api/equipment",equipmentRoute)
 app.use("/api/users",userRoutes)
 app.use("/api/volunteers",volunteerRoute)
+app.use("/api/donors",donnersRoutes)
+
 app.use(errorHandler)
 
 app.all('*',(req:Request,res:Response,next:NextFunction)=>{
