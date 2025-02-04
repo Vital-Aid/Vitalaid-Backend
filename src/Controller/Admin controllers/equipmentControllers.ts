@@ -1,7 +1,7 @@
 import Equiment from "../../Models/Equipment";
 import {Request,Response,NextFunction} from 'express'
 import CustomError from "../../utils/CustomError";
-
+import EquipmentRequest from "../../Models/Request";
 
 interface file extends Express.Multer.File {
     fieldname: string;
@@ -71,4 +71,14 @@ export const deleteEquipments=async(req:Request,res:Response,next:NextFunction)=
         return next (new CustomError('equipment not found',404))
     }
     res.status(200).json({error:false,message:'equipment updated',data:deletedeuipment})
+}
+
+
+
+export const getAllequipmetRequests=async(req: Request, res: Response, next: NextFunction)=>{
+    const requests=await EquipmentRequest.find().populate("user", "name email").populate("equipment", "name description quantity") 
+    if(!requests){
+        return next(new CustomError("requenst not found",404))
+    }
+    res.status(200).json({error:false,message:'all requests',data:requests})
 }
