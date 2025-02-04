@@ -29,11 +29,28 @@ export const addVolunteers=async(req:Request,res:Response,next:NextFunction)=>{
 }
 
 export const getVolunteers=async(req:Request,res:Response,next:NextFunction)=>{
-    const volunteers=await Volunteer.find({isDeleted:false})
+
+    const page = Number(req.query.page)
+    const limit = Number(req.query.limit)
+
+    if (isNaN(page) || isNaN(limit) || page < 1 || limit < 1) {
+        return next(new CustomError("Invalid pagination parameters", 400));
+    }
+
+    const totalvolunteer= await Volunteer.countDocuments({isDeleted:false})
+    const volunteers=await Volunteer.find({isDeleted:false}).skip((page - 1) * limit).limit(limit);
+
     if(!volunteers ||volunteers.length==0){
         return next(new CustomError('Volunteers not found',404))
     }
-    res.status(200).json({error:false,message:'all volunteers',data:volunteers})
+    res.status(200).json({
+        error:false,
+        message:'all volunteers',
+        allVolunteers:volunteers,
+        totalPages: Math.ceil(totalvolunteer / limit), 
+        currentPage: page,
+        totalvolunteer
+    })
 }
 
 export const getvolonteersById=async(req:Request,res:Response,next:NextFunction)=>{
