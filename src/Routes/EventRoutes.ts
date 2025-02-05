@@ -8,7 +8,7 @@ import { adminAuth } from "../Middleware/authMiddleware";
 const eventRoutes=express.Router()
 
 eventRoutes
-.post('/addevents',adminAuth,upload.single("image"),tryCatch(addEvent))
+.post('/addevents',adminAuth,tryCatch(addEvent))
 .get('/getevents',tryCatch(getEvents))
 .get('/geteventbyid/:id',tryCatch(getEventById))
 .put('/editevent/:id',adminAuth,upload.single("image"),tryCatch(editEvents))

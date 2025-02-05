@@ -17,16 +17,11 @@ interface file extends Express.Multer.File {
 };
 
 export const addEquipment=async(req:Request,res:Response,next:NextFunction)=>{
-    const {description,quantity,name}=req.body
-    console.log("ssss",req.body);
-    
-    const image= (req.file as file)?.location;
-    console.log(req.file);
-    
-    if(!image){
-        return next(new CustomError('image not found',404))
-    }
-    const equipmentData={description,quantity,name,image}
+    const {description,quantity,name,imageUrl}=req.body
+
+    console.log(req.body);
+
+    const equipmentData={description,quantity,name,image:imageUrl}
     const newequipment=await new Equiment(equipmentData)
     await newequipment.save()
     res.status(200).json({error:false,message:'aquipment added successfully',data:newequipment})

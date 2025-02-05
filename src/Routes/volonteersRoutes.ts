@@ -6,7 +6,7 @@ import { upload } from '../Middleware/ImageUpload'
 const volunteerRoute=express.Router()
 
 volunteerRoute
-.post('/add',adminAuth,upload.single('image'),tryCatch(addVolunteers))
+.post('/add',adminAuth,tryCatch(addVolunteers))
 .get('/getall',tryCatch(getVolunteers))
 .get('/getbyid/:id',tryCatch(getvolonteersById))
 .put('/edit/:id',adminAuth,upload.single('image'),tryCatch(editvolunteers))

@@ -7,7 +7,7 @@ import { addEquipment, deleteEquipments, editEquipments, getAllEquipments, getEq
 
 
 equipmentRoute
-.post('/addequipment',adminAuth,upload.single("image"),tryCatch(addEquipment))
+.post('/addequipment',adminAuth,tryCatch(addEquipment))
 .get('/getequipments',adminAuth,tryCatch(getAllEquipments))
 .get('/getequipment/:id',tryCatch(getEquipmentBYId))
 .put('/editEquipment/:id',adminAuth,upload.single('image'),tryCatch(editEquipments))

@@ -21,17 +21,15 @@ interface file extends Express.Multer.File {
 export const addEvent = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     console.log(req);
 
-    const { organization, location, date, description, title } = req.body;
+    const { organization, location, date, description, title,imageUrl } = req.body;
 
-    const image = (req.file as file)?.location;
+    console.log("Image URL:", imageUrl);
 
-    console.log("Image URL:", image);
-
-    if (!image) {
+    if (!imageUrl) {
         return next(new CustomError('image is required', 404))
     }
 
-    const newEvent = new Event({ title, organization, location, image, date, description });
+    const newEvent = new Event({ title, organization, location, image:imageUrl, date, description });
 
     await newEvent.save();
     res.status(200).json({ error: false, message: 'Event added successfully', event: newEvent });

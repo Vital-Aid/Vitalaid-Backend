@@ -60,24 +60,15 @@ export const viewDRbyId = async (req: Request, res: Response, next: NextFunction
 
 export const addDetails = async (req: Request, res: Response, next: NextFunction) => {
 
-    const { doctor, qualification, specialization, availablity, description, address } = req.body
-
-    if (!doctor || !qualification || !specialization || !availablity || !description || !address) {
-        return next(new CustomError("All required fields must be provided", 400));
-    }
-
-    const files = req.files as { [fieldname: string]: FileWithLocation[] }
-
-    const profileImage = files["profileImage"]?.[0]?.location;
-
-    const certificates = files["certificates"]?.map(file => file.location) || [];
-    console.log("cirtificate", certificates);
+    const { doctor, qualification, specialization, availablity, description, address,profileImage ,certificates} = req.body
+    console.log(req.body);
+    
 
 
     const newDetails = new DrDetails({
         doctor,
-        qualification: JSON.parse(qualification),
-        specialization: JSON.parse(specialization),
+        qualification: qualification,
+        specialization: specialization,
         availablity,
         profileImage,
         description,

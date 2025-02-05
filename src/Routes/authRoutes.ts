@@ -4,6 +4,7 @@ import { validateData } from "../Middleware/zodValidation";
 import tryCatch from "../utils/tryCatch";
 import { adminlogin, docterRegistration, doctorlogin, logout, userlogin, userRegistration } from '../Controller/User Controllers/authController';
 import { adminAuth } from '../Middleware/authMiddleware';
+import { generateSignedUrl } from '../utils/signedurl';
 
 
 const routes=express.Router()
@@ -15,5 +16,6 @@ routes
 .post('/doctorlogin',tryCatch(doctorlogin))
 .post('/adminlogin',tryCatch(adminlogin))
 .delete('/logout',adminAuth,tryCatch(logout))
+.get("/generate-signed-url", tryCatch(generateSignedUrl))
 
 export default routes
