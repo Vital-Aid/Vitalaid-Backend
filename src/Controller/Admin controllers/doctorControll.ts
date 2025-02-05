@@ -17,21 +17,39 @@ interface FileWithLocation extends Express.Multer.File {
 };
 
 export const viewalldoctors = async (req: Request, res: Response, next: NextFunction) => {
-    const AllDoctors = await Doctor.find({ isDeleted: false })
-    if (!AllDoctors) {
-        return next(new CustomError("no Doctors found",404))
+
+
+    const page = Number(req.query.page)
+    const limit = Number(req.query.limit)
+
+
+    if (isNaN(page) || isNaN(limit) || page < 1 || limit < 1) {
+        return next(new CustomError("Invalid pagination parameters", 400));
     }
+
+    const totalDoctors = await Doctor.countDocuments({ isDeleted: false });
+    const doctors = await Doctor.find({ isDeleted: false })
+        .skip((page - 1) * limit)
+        .limit(limit);
+
+    if (!doctors.length) {
+        return next(new CustomError("No doctors found", 404));
+    }
+
     res.status(200).json({
         status: 200,
-        message: "docor Data",
-        Data: AllDoctors
-    })
+        message: "Doctors Data",
+        data: doctors,
+        totalPages: Math.ceil(totalDoctors / limit), 
+        currentPage: page,
+        totalDoctors
+    });
 }
 
 export const viewDRbyId = async (req: Request, res: Response, next: NextFunction) => {
     const doctor = await Doctor.findById(req.params.id)
     if (!doctor) {
-        return next(new CustomError("There is any doctor found with this ID",404))
+        return next(new CustomError("There is any doctor found with this ID", 404))
     }
     res.status(200).json({
         message: "One doctor data",
@@ -82,7 +100,7 @@ export const getdrDetails = async (req: Request, res: Response, next: NextFuncti
 
     const Details = await DrDetails.find({ doctor: req.params.id }).populate("doctor", "name email phone")
     if (!Details) {
-        return next(new CustomError("there is no details find about this doctor",404))
+        return next(new CustomError("there is no details find about this doctor", 404))
     }
 
 
@@ -109,7 +127,7 @@ export const editDetails = async (req: Request, res: Response, next: NextFunctio
     }
 
     existingDetails.qualification = JSON.parse(qualification);
-    existingDetails.specialization =JSON.parse(specialization) ;
+    existingDetails.specialization = JSON.parse(specialization);
     existingDetails.availablity = availablity;
     existingDetails.description = description;
     existingDetails.address = address;
@@ -123,7 +141,7 @@ export const editDetails = async (req: Request, res: Response, next: NextFunctio
             files["certificates"].map(file => file.location)
         );
     }
-    
+
 
     await existingDetails.save();
 
