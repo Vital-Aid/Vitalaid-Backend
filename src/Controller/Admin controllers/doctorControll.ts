@@ -92,6 +92,22 @@ export const getdrDetails = async (req: Request, res: Response, next: NextFuncti
     })
 }
 
+export const getallDetails = async (req: Request, res: Response, next: NextFunction) => {
+
+
+    const Details = await DrDetails.find().populate("doctor", "name email phone")
+    if (!Details) {
+        return next(new CustomError("there is no details find about this doctor",404))
+    }
+
+    res.status(200).json({
+        Message: "Doctor details",
+        data: Details
+    })
+}
+
+
+
 export const editDetails = async (req: Request, res: Response, next: NextFunction) => {
 
     const doctor = req.params.id;
