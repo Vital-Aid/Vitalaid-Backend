@@ -34,11 +34,25 @@ export const addEquipment=async(req:Request,res:Response,next:NextFunction)=>{
 
 
 export const getAllEquipments=async(req:Request,res:Response,next:NextFunction)=>{
-    const equipments=await Equiment.find({isDeleted:false})
+    const page = Number(req.query.page)
+    const limit = Number(req.query.limit)
+
+    if (isNaN(page) || isNaN(limit) || page < 1 || limit < 1) {
+        return next(new CustomError("Invalid pagination parameters", 400));
+    }
+    const totalequipment= await Equiment.countDocuments({isDeleted:false})
+    const equipments=await Equiment.find({isDeleted:false}).skip((page - 1) * limit).limit(limit);
+
     if(!equipments){
         return next(new CustomError('equipments not found',404))
     }
-    res.status(200).json({error:false,data:equipments})
+    res.status(200).json({
+        error:false,
+        allEquipment:equipments,
+        totalPages: Math.ceil(totalequipment / limit), 
+        currentPage: page,
+        totalequipment
+    })
 }
 
 export const getEquipmentBYId=async(req:Request,res:Response,next:NextFunction)=>{
