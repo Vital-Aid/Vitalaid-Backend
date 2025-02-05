@@ -95,4 +95,5 @@ export const getAllequipmetRequests=async(req: Request, res: Response, next: Nex
         return next(new CustomError("requenst not found",404))
     }
     res.status(200).json({error:false,message:'all requests',data:requests})
-}
+}  
+   

@@ -22,7 +22,8 @@ const RequestSchema:Schema<RequestType>=new Schema({
         required:true
     },
     status:{
-        type:String,enum:["pending","accepted","deliverd","cancell"],
+        type:String,
+        enum:["pending","accepted","deliverd","cancell"],
         default:"pending"
     }
 })

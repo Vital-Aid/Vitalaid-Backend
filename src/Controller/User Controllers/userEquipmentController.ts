@@ -1,7 +1,9 @@
+
 import CustomError from "../../utils/CustomError";
 import Equiment from "../../Models/Equipment";
 import EquipmentRequest from "../../Models/Request";
 import { Request, Response, NextFunction } from "express";
+import mongoose from "mongoose";
 
 
 export const makeRequest = async (req: Request, res: Response, next: NextFunction) => {
@@ -36,8 +38,18 @@ export const getRequestbyuser=async(req: Request, res: Response, next: NextFunct
 }
 
 export const removeRequest=async(req: Request, res: Response, next: NextFunction)=>{
-    const user=req.user?.id
-    const equipment=req.params
-    const deleteRquest=await EquipmentRequest.deleteOne({user,equipment})
-    res.status(200).json({error:false,message:'request deleted',data:deleteRquest})
+   
+    const  {equipment } = req.params;
+
+    const deleteRequest = await EquipmentRequest.findByIdAndDelete(equipment);
+
+    res.status(200).json({ error: false, message: "Request deleted", data: deleteRequest });
+
+}
+
+export const updaterequest=async(req: Request, res: Response, next: NextFunction)=>{
+    const {id}=req.params
+    const status=req.body
+    const updatedrequest=await EquipmentRequest.findByIdAndUpdate(id,status,{new:true})
+    res.status(200).json({error:false,message:'request updated',data:updatedrequest})
 }
