@@ -60,8 +60,9 @@ export const viewDRbyId = async (req: Request, res: Response, next: NextFunction
 
 export const addDetails = async (req: Request, res: Response, next: NextFunction) => {
 
+
     const { doctor, qualification, specialization, availability, description, address,profileImage ,certificates} = req.body
-   
+
 
     const newDetails = new DrDetails({
         doctor,
