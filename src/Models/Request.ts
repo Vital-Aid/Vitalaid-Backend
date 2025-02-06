@@ -1,10 +1,11 @@
 import mongoose,{Document,ObjectId,Schema} from "mongoose";
 
+type StatusType = "pending" | "accepted" | "delivered" | "cancelled";
 interface RequestType extends Document{
     user:ObjectId,
     equipment:ObjectId,
     location:string,
-    status:Enumerator
+    status:StatusType
 }
 
 const RequestSchema:Schema<RequestType>=new Schema({
@@ -21,9 +22,11 @@ const RequestSchema:Schema<RequestType>=new Schema({
         required:true
     },
     status:{
-        type:String,enum:["pending","accepted","deliverd","cancell"]
+        type:String,
+        enum:["pending","accepted","deliverd","cancell"],
+        default:"pending"
     }
 })
 
-const Request = mongoose.model<RequestType>("Request",RequestSchema)
-export default Request
+const EquipmentRequest = mongoose.model<RequestType>("Request",RequestSchema)
+export default EquipmentRequest

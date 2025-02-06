@@ -1,7 +1,7 @@
 import Equiment from "../../Models/Equipment";
 import { Request, Response, NextFunction } from 'express'
 import CustomError from "../../utils/CustomError";
-
+import EquipmentRequest from "../../Models/Request";
 
 interface file extends Express.Multer.File {
     fieldname: string;
@@ -28,18 +28,18 @@ export const addEquipment = async (req: Request, res: Response, next: NextFuncti
 }
 
 
-export const getAllEquipments = async (req: Request, res: Response, next: NextFunction) => {
+export const getAllEquipments=async(req:Request,res:Response,next:NextFunction)=>{
     const page = Number(req.query.page)
     const limit = Number(req.query.limit)
 
     if (isNaN(page) || isNaN(limit) || page < 1 || limit < 1) {
         return next(new CustomError("Invalid pagination parameters", 400));
     }
-    const totalequipment = await Equiment.countDocuments({ isDeleted: false })
-    const equipments = await Equiment.find({ isDeleted: false }).skip((page - 1) * limit).limit(limit);
+    const totalequipment= await Equiment.countDocuments({isDeleted:false})
+    const equipments=await Equiment.find({isDeleted:false}).skip((page - 1) * limit).limit(limit);
 
-    if (!equipments) {
-        return next(new CustomError('equipments not found', 404))
+    if(!equipments){
+        return next(new CustomError('equipments not found',404))
     }
     res.status(200).json({
         error: false,
@@ -81,6 +81,16 @@ export const deleteEquipments = async (req: Request, res: Response, next: NextFu
     if (!deletedeuipment) {
         return next(new CustomError('equipment not found', 404))
     }
-    
-    res.status(200).json({ error: false, message: 'equipment updated', data: deletedeuipment })
+    res.status(200).json({error:false,message:'equipment updated',data:deletedeuipment})
 }
+
+
+
+export const getAllequipmetRequests=async(req: Request, res: Response, next: NextFunction)=>{
+    const requests=await EquipmentRequest.find().populate("user", "name email").populate("equipment", "name description quantity") 
+    if(!requests){
+        return next(new CustomError("requenst not found",404))
+    }
+    res.status(200).json({error:false,message:'all requests',data:requests})
+}  
+   
