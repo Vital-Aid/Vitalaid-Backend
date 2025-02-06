@@ -46,6 +46,7 @@ const DrDetailschema: Schema<DrDetailsType> = new Schema({
 
 )
 
-const DrDetails=mongoose.model<DrDetailsType>("DoctorDeatails",DrDetailschema)
+const DrDetails=mongoose.model<DrDetailsType>("DrDetails",DrDetailschema)
+
 export default DrDetails
 

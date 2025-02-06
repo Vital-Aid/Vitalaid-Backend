@@ -98,11 +98,14 @@ export const addDetails = async (req: Request, res: Response, next: NextFunction
 export const getdrDetails = async (req: Request, res: Response, next: NextFunction) => {
 
 
-    const Details = await DrDetails.find({ doctor: req.params.id }).populate("doctor", "name email phone")
+    const Details = await DrDetails.find({ doctor: req.params.id }).populate("doctor", "name email phone _id")
+    console.log('Details',Details);
+    console.log('12', req.params.id);
+    
+    
     if (!Details) {
         return next(new CustomError("there is no details find about this doctor", 404))
     }
-
 
     res.status(200).json({
         Message: "Doctor details",
@@ -111,18 +114,22 @@ export const getdrDetails = async (req: Request, res: Response, next: NextFuncti
 }
 
 export const getallDetails = async (req: Request, res: Response, next: NextFunction) => {
+   
+        const Details = await DrDetails.find().populate({
+            path: "doctor",
+            select: "name email phone"
+        });
 
+        if (!Details || Details.length === 0) {
+            return next(new CustomError("No doctor details found", 404));
+        }
 
-    const Details = await DrDetails.find().populate("doctor", "name email phone")
-    if (!Details) {
-        return next(new CustomError("there is no details find about this doctor",404))
-    }
-
-    res.status(200).json({
-        Message: "Doctor details",
-        data: Details
-    })
-}
+        res.status(200).json({
+            Message: "Doctor details",
+            data: Details
+        });
+  
+};
 
 
 
