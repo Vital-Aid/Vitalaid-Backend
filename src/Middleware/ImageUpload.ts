@@ -14,7 +14,7 @@ const s3 = new S3Client({
 export const upload = multer({
   storage: multerS3({
     s3,
-    bucket: process.env.S3_BUCKET_NAME||"vitalaidnsr",
+    bucket: process.env.S3_BUCKET_NAME || "vitalaidnsr",
 
     metadata: (req, file, cb) => {
       cb(null, { fieldName: file.fieldname });

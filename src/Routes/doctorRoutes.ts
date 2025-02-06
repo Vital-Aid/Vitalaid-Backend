@@ -9,6 +9,7 @@ import { addDetails, deleteDr, editDetails, getallDetails, getdrDetails } from "
 const routes = express.Router()
 
 routes
+
     .get('/getdoctors', adminAuth, tryCatch(getDoctors))
     .get('/getAllDoctors',userAuth, tryCatch(getallDetails))
 

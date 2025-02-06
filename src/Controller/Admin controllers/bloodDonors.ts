@@ -15,32 +15,20 @@ interface file extends Express.Multer.File {
     location: string;
 };
 
-export const addDonor = async (req: Request, res: Response) => {
-    const image = (req.file as file)?.location;
+export const addDonor = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  
+    const { name, BloodGroup, Phone, Gender, Age, Address, imageUrl } = req.body;
+  
 
-    console.log("Image URL:", image);
-
-    if (!image) {
-        res.status(400).json({ error: true, message: 'Image is required' });
+    if (!imageUrl) {
+        return next(new CustomError("Image URL is required", 400))
     }
-
-
-    const { name, BloodGroup, Phone, Gender, Age, Address } = req.body;
-
-    console.log('req.body', req.body);
 
     const existingDonor = await BloodDonor.findOne({ Phone });
 
     if (existingDonor) {
-        res.status(409).json({
-            error: true,
-            message: "Donor with this phone number already exists.",
-            donor: existingDonor,
-
-        });
-        return;
+        return next(new CustomError("Donor with this phone number already exists.", 409))
     }
-
 
     const newDonor = new BloodDonor({
         name,
@@ -49,19 +37,13 @@ export const addDonor = async (req: Request, res: Response) => {
         Gender,
         Age,
         Address,
-        image,
+        image: imageUrl,
     });
 
     await newDonor.save();
-
-    res.status(201).json({
-        error: false,
-        success: true,
-        message: "Donor added successfully",
-        donor: newDonor,
-    });
-
+    res.status(201).json({ success: true, message: "Donor added successfully!", donor: newDonor });
 };
+
 
 export const getDonors = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -72,7 +54,7 @@ export const getDonors = async (req: Request, res: Response, next: NextFunction)
         return next(new CustomError("Invalid pagination parameters", 400));
     }
 
-    const totaldonor= await BloodDonor.countDocuments({ isDeleted: false })
+    const totaldonor = await BloodDonor.countDocuments({ isDeleted: false })
 
     const donors = await BloodDonor.find({ isDeleted: false }).skip((page - 1) * limit).limit(limit);
 
