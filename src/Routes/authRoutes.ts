@@ -7,15 +7,16 @@ import { adminAuth } from '../Middleware/authMiddleware';
 import { generateSignedUrl } from '../utils/signedurl';
 
 
-const routes=express.Router()
+const routes = express.Router()
 
 routes
-.post('/register',validateData(userValidationType),tryCatch(userRegistration))
-.post('/registerDocter',adminAuth,validateData(userValidationType),tryCatch(docterRegistration))
-.post('/userlogin',tryCatch(userlogin))
-.post('/doctorlogin',tryCatch(doctorlogin))
-.post('/adminlogin',tryCatch(adminlogin))
-.delete('/logout',adminAuth,tryCatch(logout))
-.get("/generate-signed-url", tryCatch(generateSignedUrl))
+
+    .post('/register', validateData(userValidationType), tryCatch(userRegistration))
+    .post('/registerDocter', adminAuth, validateData(userValidationType), tryCatch(docterRegistration))
+    .post('/userlogin', tryCatch(userlogin))
+    .post('/doctorlogin', tryCatch(doctorlogin))
+    .post('/adminlogin', tryCatch(adminlogin))
+    .delete('/logout', adminAuth, tryCatch(logout))
+    .get("/generate-signed-url", tryCatch(generateSignedUrl))
 
 export default routes

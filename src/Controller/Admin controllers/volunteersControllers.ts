@@ -18,7 +18,7 @@ interface file extends Express.Multer.File {
 
 export const addVolunteers=async(req:Request,res:Response,next:NextFunction)=>{
     const {name,phone,gender,image}=req.body
-    console.log(image);
+
     
     const newvolunteers=new Volunteer({name,phone,gender,image})
     if(!newvolunteers){

@@ -16,10 +16,9 @@ interface file extends Express.Multer.File {
 };
 
 export const addDonor = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    console.log(req);
-    
+  
     const { name, BloodGroup, Phone, Gender, Age, Address, imageUrl } = req.body;
-    console.log("ksksksks",imageUrl);
+  
 
     if (!imageUrl) {
         return next(new CustomError("Image URL is required", 400))

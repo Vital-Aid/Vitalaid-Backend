@@ -5,12 +5,12 @@ type Controller = (req: Request, res: Response, next: NextFunction) => Promise<v
 
 const tryCatch =
   (controller: Controller) =>
-  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      await controller(req, res, next);
-    } catch (error) {
-      return next(error)
-    }
-  };
+    async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+      try {
+        await controller(req, res, next);
+      } catch (error) {
+        return next(error)
+      }
+    };
 
 export default tryCatch;
