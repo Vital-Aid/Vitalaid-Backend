@@ -29,6 +29,8 @@ export const addEquipment = async (req: Request, res: Response, next: NextFuncti
 
 
 export const getAllEquipments=async(req:Request,res:Response,next:NextFunction)=>{
+    console.log(req.query);
+    
     const page = Number(req.query.page)
     const limit = Number(req.query.limit)
 
