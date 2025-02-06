@@ -12,10 +12,7 @@ userRoutes
     .get('/getUserById/:_id', tryCatch(getUserById))
     .get('/getblockedUsers', tryCatch(getblockedUsers))
     .post('/blockUser/:_id', tryCatch(blockUser))
-
-
-//eequest for equipments
-.post('/addrequest',userAuth,tryCatch(makeRequest))
-.get('/userrequest',userAuth,tryCatch(getRequestbyuser))
-.delete('/deleterequest/:equipment',userAuth,tryCatch(removeRequest))
+    .post('/addrequest', userAuth, tryCatch(makeRequest))
+    .get('/userrequest', userAuth, tryCatch(getRequestbyuser))
+    .delete('/deleterequest/:equipment', userAuth, tryCatch(removeRequest))
 export default userRoutes;
