@@ -4,7 +4,7 @@ interface DrDetailsType extends Document {
     doctor: mongoose.ObjectId,
     qualification: string[],
     specialization: string[],
-    availablity: string,
+    availability: string,
     profileImage: string,
     description: string,
     address: string,
@@ -24,7 +24,7 @@ const DrDetailschema: Schema<DrDetailsType> = new Schema({
         type: [String],
         required: true
     },
-    availablity: {
+    availability: {
         type: String
     },
     profileImage: {

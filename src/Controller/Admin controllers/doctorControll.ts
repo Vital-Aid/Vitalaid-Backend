@@ -60,14 +60,14 @@ export const viewDRbyId = async (req: Request, res: Response, next: NextFunction
 
 export const addDetails = async (req: Request, res: Response, next: NextFunction) => {
 
-    const { doctor, qualification, specialization, availablity, description, address,profileImage ,certificates} = req.body
+    const { doctor, qualification, specialization, availability, description, address,profileImage ,certificates} = req.body
    
 
     const newDetails = new DrDetails({
         doctor,
         qualification: qualification,
         specialization: specialization,
-        availablity,
+        availability,
         profileImage,
         description,
         address,
@@ -102,9 +102,9 @@ export const getdrDetails = async (req: Request, res: Response, next: NextFuncti
 export const editDetails = async (req: Request, res: Response, next: NextFunction) => {
 
     const doctor = req.params.id;
-    const { qualification, specialization, availablity, description, address } = req.body;
+    const { qualification, specialization, availability, description, address } = req.body;
 
-    if (!qualification || !specialization || !availablity || !description || !address) {
+    if (!qualification || !specialization || !availability || !description || !address) {
         return next(new CustomError("All required fields must be provided", 400));
     }
 
@@ -117,7 +117,7 @@ export const editDetails = async (req: Request, res: Response, next: NextFunctio
 
     existingDetails.qualification = JSON.parse(qualification);
     existingDetails.specialization = JSON.parse(specialization);
-    existingDetails.availablity = availablity;
+    existingDetails.availability = availability;
     existingDetails.description = description;
     existingDetails.address = address;
 
