@@ -3,7 +3,7 @@ import tryCatch from '../utils/tryCatch'
 import { blockUser, getblockedUsers, getUserById, getUsers } from '../Controller/User Controllers/userController'
 import { userAuth } from '../Middleware/authMiddleware'
 import { getRequestbyuser, makeRequest, removeRequest } from '../Controller/User Controllers/userEquipmentController'
-import { getAllEquipments } from '../Controller/Admin controllers/equipmentControllers'
+import { getAllEquipments, getEquipmentBYId } from '../Controller/Admin controllers/equipmentControllers'
 
 const userRoutes = express.Router()
 
@@ -17,5 +17,6 @@ userRoutes
     .get('/userrequest', userAuth, tryCatch(getRequestbyuser))
     .delete('/deleterequest/:equipment', userAuth, tryCatch(removeRequest))
     .get('/getallequipment',userAuth,tryCatch(getAllEquipments))
+    .get('/getequipmentbyid/:id',userAuth,tryCatch(getEquipmentBYId))
 
 export default userRoutes;

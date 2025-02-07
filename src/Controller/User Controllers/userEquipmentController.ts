@@ -28,7 +28,7 @@ export const getRequestbyuser=async(req: Request, res: Response, next: NextFunct
     const user=req.user?.id
     console.log('dyugsyugu',user);
     
-    const request=await EquipmentRequest.find({user}).populate("equipment", "name description quantity") 
+    const request=await EquipmentRequest.find({user}).populate("equipment", "name description quantity").populate('user',"name email") 
     console.log('req:',request);
     
     if(!request){
