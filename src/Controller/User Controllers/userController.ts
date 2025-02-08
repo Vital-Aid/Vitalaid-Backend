@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import User from "../../Models/UserModel";
 import CustomError from "../../utils/CustomError";
+import UserDetails from "../../Models/Userdetails";
 
 export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -64,3 +65,35 @@ export const blockUser = async (req: Request, res: Response, next: NextFunction)
         user: blockedUser,
     });
 }
+
+export const addDetails = async (req: Request, res: Response, next: NextFunction) => {
+    const { age, occupation, address, gender, bloodgroup } = req.body
+    const user = req.params.id
+
+    const Details = new UserDetails({
+        user,
+        address,
+        age,
+        occupation,
+        gender,
+        bloodgroup
+    })
+
+    const saveddetails = await Details.save()
+    res.status(201).json({
+        error: false,
+        message: "Details added",
+        data: saveddetails
+    })
+
+}
+
+
+export const getDetails = async (req: Request, res: Response, next: NextFunction) => {
+    const userDetails = await UserDetails.find({ user: req.params.id })
+    if (!userDetails) {
+        return next(new CustomError("No Details found for this user", 404))
+    }
+    res.status(200).json(userDetails)
+}
+

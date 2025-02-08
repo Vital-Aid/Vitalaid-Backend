@@ -3,9 +3,6 @@ import mongoose, { Document, Schema } from "mongoose";
 
 interface MedHistoryType extends Document {
     User: mongoose.ObjectId,
-    age: number,
-    gender: Enumerator,
-    bloodgroup: Enumerator,
     alergy: string,
     healthstatus: number,
     pressure: string,
@@ -22,18 +19,7 @@ const MedHistoryschema: Schema<MedHistoryType> = new Schema({
         type: mongoose.Types.ObjectId, ref: "User",
         required: true
     },
-    age: {
-        type: Number,
-        required: true
-    },
-    gender: {
-        type: String,
-        enum: ["male", "female"]
-    },
-    bloodgroup: {
-        type: String,
-        enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
-    },
+   
     alergy: {
         type: String
     },
