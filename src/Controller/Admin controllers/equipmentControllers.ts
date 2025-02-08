@@ -88,11 +88,32 @@ export const deleteEquipments = async (req: Request, res: Response, next: NextFu
 
 
 
-export const getAllequipmetRequests=async(req: Request, res: Response, next: NextFunction)=>{
-    const requests=await EquipmentRequest.find().populate("user", "name email").populate("equipment", "name description quantity") 
-    if(!requests){
-        return next(new CustomError("requenst not found",404))
+export const getAllequipmetRequests = async (req: Request, res: Response, next: NextFunction) => {
+    const page = Number(req.query.page);
+    const limit = Number(req.query.limit);
+
+    if (isNaN(page) || isNaN(limit) || page < 1 || limit < 1) {
+        return next(new CustomError("Invalid pagination parameters", 400));
     }
-    res.status(200).json({error:false,message:'all requests',data:requests})
-}  
+
+    const totalRequests = await EquipmentRequest.countDocuments();
+    const requests = await EquipmentRequest.find()
+        .populate("user", "name email")
+        .populate("equipment", "name description quantity image")
+        .skip((page - 1) * limit)
+        .limit(limit);
+
+    if (!requests.length) {
+        return next(new CustomError("Requests not found", 404));
+    }
+
+    res.status(200).json({
+        error: false,
+        message: "All equipment requests",
+        data: requests,
+        totalPages: Math.ceil(totalRequests / limit),
+        currentPage: page,
+        totalRequests
+    });
+};
    
