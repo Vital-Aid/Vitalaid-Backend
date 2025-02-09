@@ -1,6 +1,8 @@
 import axios from "axios";
 import { Request, Response, NextFunction } from "express";
+import MedHistory from "../../Models/Medicalhistory";
 import CustomError from "../../utils/CustomError";
+import { error } from "console";
 
 export const generateReport = async (
   req: Request,
@@ -9,6 +11,9 @@ export const generateReport = async (
 ): Promise<void> => {
   try {
     const {
+      userid,
+      name,
+      age,
       height,
       weight,
       pressureRate,
@@ -20,27 +25,42 @@ export const generateReport = async (
     } = req.body;
 
     const prompt = `
-Generate a detailed medical report based on the following patient details:
-
-**Patient Information:**
-- Height: ${height || "Not provided"}
-- Weight: ${weight || "Not provided"}
-- Blood Pressure: ${pressureRate || "Not provided"} mmHg (Specify if systolic/diastolic or single value)
-- Blood Sugar Level: ${sugarRate || "Not provided"} mg/dL (Specify if fasting, postprandial, or random)
-- Cholesterol Level: ${cholesterol || "Not provided"} mg/dL (Specify if total cholesterol, LDL, HDL, or triglycerides)
-- Allergies: ${allergies || "None reported"}
-- Other Diseases/Medical History: ${otherDiseases || "None reported"}
-- Additional Patient Notes: ${aboutYou || "No additional details"}
-
-**Task:**
-1. **Assess Health Status:** Provide a structured medical summary, interpreting the given values based on standard health guidelines.
-2. **Identify Concerns:** Highlight any potential health risks, abnormal values, or medical conditions that may need further evaluation.
-3. **Give Recommendations:** Provide actionable medical advice, including necessary lifestyle changes, diet, exercise, or possible medical tests required.
-4. **Rate Health Status:** Provide a rating out of 10 based on the overall health condition.
-5. **Determine Health Stage:** Categorize the patient’s health status into one of the following: "Healthy", "Needs Monitoring", "At Risk", or "Requires Immediate Attention".
-
-**Important:** Keep the response structured, clear, and medically relevant.
-`;
+    Generate a structured medical report based on the following patient details:
+    
+    ## **Patient Information**
+    - **Patient Name:** ${name}
+    - **Date:** ${new Date().toISOString().split("T")[0]}
+    - **Age:** ${age} years
+    - **Height:** ${height} cm
+    - **Weight:** ${weight} kg
+    - **Blood Pressure:** ${pressureRate || "Not provided"} mmHg
+    - **Blood Sugar Level:** ${sugarRate || "Not provided"} mg/dL
+    - **Cholesterol Level:** ${cholesterol || "Not provided"} mg/dL
+    - **Allergies:** ${allergies || "None reported"}
+    - **Medical History:** ${otherDiseases || "None reported"}
+    - **Additional Notes:** ${aboutYou || "No additional details"}
+    
+    ## **Health Assessment**
+    1. **Anthropometric Analysis:** Evaluate height, weight, and BMI.
+    2. **Vital Signs Assessment:** Analyze blood pressure and sugar levels.
+    3. **Metabolic Health:** Review cholesterol levels and metabolic parameters.
+    4. **Allergy Considerations:** Identify potential risks and precautions.
+    5. **Medical History Review:** Consider past conditions and their impact.
+    
+    ## **Key Health Concerns**
+    - Highlight potential health risks based on patient's age and recorded health metrics.
+    
+    ## **Recommendations**
+    - Provide lifestyle, dietary, and medical test suggestions if needed.
+    
+    ## **Final Health Evaluation**
+    - **Health Score:** Rate overall health on a scale of 1 to 10 based on findings.
+    - **Health Status:** Categorize as:
+      - **Healthy** 🟢  
+      - **Needs Monitoring** 🟡  
+      - **At Risk** 🔴  
+      - **Requires Immediate Attention** ⚠️
+    `;
 
     const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
     if (!GEMINI_API_KEY) {
@@ -49,48 +69,55 @@ Generate a detailed medical report based on the following patient details:
 
     const response = await axios.post(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        contents: [{ parts: [{ text: prompt }] }],
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      { contents: [{ parts: [{ text: prompt }] }] },
+      { headers: { "Content-Type": "application/json" } }
     );
 
     const candidates = response.data?.candidates;
-
     if (!candidates || candidates.length === 0) {
-      console.error(
-        "No candidates found in Gemini API response:",
-        response.data
-      );
       throw new CustomError("No candidates found in Gemini API response", 500);
     }
 
     const reportText = candidates[0]?.content?.parts?.[0]?.text;
-
+    const normalText = reportText.replace(/\*\*/g, "");
+    console.log(reportText);
     if (!reportText) {
-      console.error(
-        "Report text not found in Gemini API response:",
-        response.data
+      throw new CustomError(
+        "Report text not found in Gemini API response",
+        500
       );
-      throw new CustomError("Report text not found in Gemini API response", 500);
     }
 
-    const normalText = reportText.replace(/\*\*/g, "");
-
-    res.status(200).json({
-      success: true,
+    const newhistory = new MedHistory({
+      User: userid,
       report: normalText,
     });
+
+    await newhistory.save();
+
+    res.status(200).json({ success: true, report: newhistory });
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      const errorMessage =
-        error.response?.data?.error?.message || "API request failed";
-      return next(new CustomError(errorMessage, error.response?.status || 500));
+      return next(
+        new CustomError(
+          error.response?.data?.error?.message || "API request failed",
+          error.response?.status || 500
+        )
+      );
     }
     next(error);
   }
+};
+
+
+export const getReportbyid = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const reports = await MedHistory.find({ User: req.params.id });
+  if (!reports) {
+    return next(new CustomError("any reports found for this user"));
+  }
+  res.status(200).json(reports);
 };

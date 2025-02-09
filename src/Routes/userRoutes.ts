@@ -4,7 +4,7 @@ import { addDetails, blockUser, getblockedUsers, getDetails, getUserById, getUse
 import { userAuth } from '../Middleware/authMiddleware'
 import { getRequestbyuser, makeRequest, removeRequest } from '../Controller/User Controllers/userEquipmentController'
 import { getAllEquipments } from '../Controller/Admin controllers/equipmentControllers'
-import { generateReport } from '../Controller/User Controllers/reportControll'
+import { generateReport, getReportbyid,  } from '../Controller/User Controllers/reportControll'
 
 const userRoutes = express.Router()
 
@@ -21,5 +21,8 @@ userRoutes
     .post("/addDetails/:id",userAuth,tryCatch(addDetails))
     .get("/getdetails/:id",tryCatch(getDetails))
     .post("/generatereport",tryCatch(generateReport)) 
+    
+    .get("/getreportof/:id",tryCatch(getReportbyid))
 
 export default userRoutes;
+
