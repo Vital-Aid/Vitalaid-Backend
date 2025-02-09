@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import Doctor from "../../Models/Doctor";
 import CustomError from "../../utils/CustomError";
+import DrDetails from "../../Models/DoctorDetails";
 
 export const getDoctors = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -29,6 +30,8 @@ export const getDoctors = async (req: Request, res: Response, next: NextFunction
         totalDoctors
     });
 }
+
+
 
 export const getDoctersById = async (req: Request, res: Response, next: NextFunction) => {
 

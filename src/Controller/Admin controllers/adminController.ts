@@ -61,6 +61,21 @@ export const getEvents = async (req: Request, res: Response, next: NextFunction)
 
 }
 
+export const getAllEvents = async (req: Request, res: Response, next: NextFunction) => {
+  
+  
+    const events = await Event.find({ isDeleted: false })
+    if (!events) {
+        return next(new CustomError("Events not found", 404))
+    }
+    res.status(200).json({
+        error: 'false',
+        events: events,
+       
+    })
+
+}
+
 export const getEventById = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params
     const event = await Event.findById(id)
