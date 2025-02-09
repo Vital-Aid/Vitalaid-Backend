@@ -12,6 +12,6 @@ volunteerRoute
     .get('/getbyid/:id', tryCatch(getvolonteersById))
     .put('/edit/:id', adminAuth, upload.single('image'), tryCatch(editvolunteers))
     .put('/delete/:id', adminAuth, tryCatch(deleteVolunteers))
-
+    
 
 export default volunteerRoute
