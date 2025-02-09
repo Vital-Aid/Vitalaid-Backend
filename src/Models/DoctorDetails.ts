@@ -7,6 +7,7 @@ interface DrDetailsType extends Document {
     availability: string,
     profileImage: string,
     description: string,
+    hospital:string;
     address: string,
     certificates: string[]
 }
@@ -27,6 +28,10 @@ const DrDetailschema: Schema<DrDetailsType> = new Schema({
     availability: {
         type: String
     },
+    hospital: {
+        type: String,
+        required: true,
+      },
     profileImage: {
         type: String
     },
@@ -47,5 +52,6 @@ const DrDetailschema: Schema<DrDetailsType> = new Schema({
 )
 
 const DrDetails=mongoose.model<DrDetailsType>("DrDetails",DrDetailschema)
+
 export default DrDetails
 

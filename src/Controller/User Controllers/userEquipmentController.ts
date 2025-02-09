@@ -24,18 +24,39 @@ export const makeRequest = async (req: Request, res: Response, next: NextFunctio
 
 
 
-export const getRequestbyuser=async(req: Request, res: Response, next: NextFunction)=>{
-    const user=req.user?.id
-    console.log('dyugsyugu',user);
-    
-    const request=await EquipmentRequest.find({user}).populate("equipment", "name description quantity") 
-    console.log('req:',request);
-    
-    if(!request){
-        return next(new CustomError("request not found",404))
+export const getRequestbyuser = async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user?.id;
+    console.log('User ID:', user);
+
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+
+    if (isNaN(page) || isNaN(limit) || page < 1 || limit < 1) {
+        return next(new CustomError("Invalid pagination parameters", 400));
     }
-    res.status(200).json({error:false,message:'user requests',data:request})
-}
+
+    const totalRequests = await EquipmentRequest.countDocuments({ user });
+    const requests = await EquipmentRequest.find({ user })
+        .populate("equipment", "name description quantity image")
+        .populate("user", "name email")
+        .skip((page - 1) * limit)
+        .limit(limit);
+
+    console.log('Requests:', requests);
+
+    if (!requests.length) {
+        return next(new CustomError("No requests found", 404));
+    }
+
+    res.status(200).json({
+        error: false,
+        message: 'User requests',
+        data: requests,
+        totalPages: Math.ceil(totalRequests / limit),
+        currentPage: page,
+        totalRequests
+    });
+};
 
 export const removeRequest=async(req: Request, res: Response, next: NextFunction)=>{
    
@@ -53,3 +74,4 @@ export const updaterequest=async(req: Request, res: Response, next: NextFunction
     const updatedrequest=await EquipmentRequest.findByIdAndUpdate(id,status,{new:true})
     res.status(200).json({error:false,message:'request updated',data:updatedrequest})
 }
+
