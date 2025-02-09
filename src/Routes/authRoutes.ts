@@ -16,7 +16,7 @@ routes
     .post('/userlogin', tryCatch(userlogin))
     .post('/doctorlogin', tryCatch(doctorlogin))
     .post('/adminlogin', tryCatch(adminlogin))
-    .delete('/logout', adminAuth, tryCatch(logout))
+    .delete('/logout',tryCatch(logout)) 
     .get("/generate-signed-url", tryCatch(generateSignedUrl))
 
 export default routes
