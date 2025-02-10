@@ -80,7 +80,7 @@ export const generateReport = async (
 
     const reportText = candidates[0]?.content?.parts?.[0]?.text;
     const normalText = reportText.replace(/\*\*/g, "");
-    console.log(reportText);
+  
     if (!reportText) {
       throw new CustomError(
         "Report text not found in Gemini API response",
