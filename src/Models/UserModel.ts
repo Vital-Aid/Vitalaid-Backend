@@ -23,8 +23,8 @@ const userSchema: Schema<UserType> = new Schema(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     profileImage: {
-      originalProfile: { type: String, default: 'https://i.pinimg.com/736x/ed/fe/67/edfe6702e44cfd7715a92390c7d8a418.jpg' },
-      thumbnail: { type: String, default: 'https://i.pinimg.com/736x/ed/fe/67/edfe6702e44cfd7715a92390c7d8a418.jpg' },
+      originalProfile: { type: String},
+      thumbnail: { type: String },
     },
 
     admin: { type: Boolean, default: false, },
