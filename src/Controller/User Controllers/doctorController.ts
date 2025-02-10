@@ -62,8 +62,8 @@ export const getDoctersByIdfordoctor = async (req: Request, res: Response, next:
 
 export const addSlotes=async(req: Request, res: Response, next: NextFunction)=>{
    const doctor=req.user?.id
-    const{place,date,time}=req.body
-    const newSlot=new Slot({doctor,place,date,time})
+    const{startingTme,endingTime}=req.body
+    const newSlot=new Slot({doctor,startingTme,endingTime})
     await newSlot.save()
     res.status(200).json({error:false,message:"solt added",data:newSlot})
 }
