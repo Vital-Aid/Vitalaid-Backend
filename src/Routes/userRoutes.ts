@@ -5,6 +5,7 @@ import { userAuth } from '../Middleware/authMiddleware'
 import { getRequestbyuser, makeRequest, removeRequest, updaterequest } from '../Controller/User Controllers/userEquipmentController'
 import { getAllEquipments, getEquipmentBYId } from '../Controller/Admin controllers/equipmentControllers'
 import { generateReport, getReportbyid,  } from '../Controller/User Controllers/reportControll'
+import { getmsgusr, msgtodr, newMessages } from '../Controller/Admin controllers/adminController'
 
 const userRoutes = express.Router()
 
@@ -21,9 +22,13 @@ userRoutes
     .post("/addDetails/:id",userAuth,tryCatch(addDetails))
     .get("/getdetails/:id",tryCatch(getDetails))
     .post("/generatereport",tryCatch(generateReport)) 
-    
     .get("/getreportof/:id",tryCatch(getReportbyid))
     .get('/getequipmentbyid/:id',userAuth,tryCatch(getEquipmentBYId))
     .put('/cancellrequest/:id',userAuth,tryCatch(updaterequest))
+    .post("/sendmessage",tryCatch(newMessages))
+    .post("/sendmsgtodr",tryCatch(msgtodr))
+    .get("/getusermsg",tryCatch(getmsgusr))
+
+    
 export default userRoutes;
 

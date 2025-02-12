@@ -5,7 +5,7 @@ import DrDetails from "../../Models/DoctorDetails";
 import Slot from "../../Models/Slotes";
 
 export const getDoctors = async (req: Request, res: Response, next: NextFunction) => {
-
+   
     const page = Number(req.query.page)
     const limit = Number(req.query.limit)
 

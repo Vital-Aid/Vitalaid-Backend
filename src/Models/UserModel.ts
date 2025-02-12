@@ -29,7 +29,6 @@ const userSchema: Schema<UserType> = new Schema(
 
     admin: { type: Boolean, default: false, },
     phone: { type: String, required: true, },
-    isVerified: { type: Boolean, required: true, default: false },
     isDeleted: { type: Boolean, default: false },
     blocked: { type: Boolean, default: false },
   },

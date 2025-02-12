@@ -19,7 +19,7 @@ const userDetailsschema: Schema<detailType> = new Schema({
     address: { type: String },
     gender: {
         type: String,
-        enum: ["male", "female"]
+        enum: ["male","female"]
     },
     bloodgroup: {
         type: String,

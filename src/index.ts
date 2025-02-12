@@ -13,6 +13,7 @@ import volunteerRoute from './Routes/volonteersRoutes';
 import errorHandler from './Middleware/ErrorHandler';
 import donnersRoutes from './Routes/donorsRoutes';
 import adminRoute from './Routes/adminRoutes';
+import {app} from "./socket/socket"
 dotenv.config();
 
 
@@ -27,11 +28,11 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((error) => console.error("MongoDB connection error:", error));
 
-const app: Application = express();
+
 
 
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: process.env.FRONTENT_URI,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization', "X-MongoDb-Id"],
   credentials: true,

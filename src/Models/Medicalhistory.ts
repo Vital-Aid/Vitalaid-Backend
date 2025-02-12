@@ -5,6 +5,7 @@ import mongoose, { Document, Schema } from "mongoose";
 interface MedHistoryType extends Document {
     User: mongoose.ObjectId,
     report:string
+    healthstatus:string
 }
 
 const MedHistoryschema: Schema<MedHistoryType> = new Schema({
@@ -13,7 +14,8 @@ const MedHistoryschema: Schema<MedHistoryType> = new Schema({
         required: true
     },
 
-    report:{type:String}
+    report:{type:String},
+    healthstatus:{type:String}
 },
     { timestamps: true }
 )

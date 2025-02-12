@@ -11,6 +11,7 @@ interface DonorType extends Document {
     image:string[],
 }
 
+
 const BloodDonorschema: Schema<DonorType> = new Schema({
     name: {
         type: String,
