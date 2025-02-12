@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import User from "../../Models/UserModel";
 import CustomError from "../../utils/CustomError";
 import UserDetails from "../../Models/Userdetails";
+import Token from "../../Models/token";
 
 export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -95,5 +96,13 @@ export const getDetails = async (req: Request, res: Response, next: NextFunction
         return next(new CustomError("No Details found for this user", 404))
     }
     res.status(200).json(userDetails)
+}
+
+export const createToken=async(req: Request, res: Response, next: NextFunction)=>{
+    const id=req.user?.id
+    const {status,date,doctorId,tokenNumber}=req.body
+    const newToken=new Token({status,date,doctorId,tokenNumber,userId:id})
+    await newToken.save()
+    res.status(200).json({status:true,message:'token created successfully',dat:newToken})
 }
 

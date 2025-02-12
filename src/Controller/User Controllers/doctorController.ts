@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import Doctor from "../../Models/Doctor";
 import CustomError from "../../utils/CustomError";
 import DrDetails from "../../Models/DoctorDetails";
-import Slot from "../../Models/Slotes";
+
 
 export const getDoctors = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -60,19 +60,19 @@ export const getDoctersByIdfordoctor = async (req: Request, res: Response, next:
 
 }
 
-export const addSlotes=async(req: Request, res: Response, next: NextFunction)=>{
-   const doctor=req.user?.id
-    const{startingTme,endingTime}=req.body
-    const newSlot=new Slot({doctor,startingTme,endingTime})
-    await newSlot.save()
-    res.status(200).json({error:false,message:"solt added",data:newSlot})
-}
+// export const addSlotes=async(req: Request, res: Response, next: NextFunction)=>{
+//    const doctor=req.user?.id
+//     const{startingTme,endingTime}=req.body
+//     const newSlot=new Slot({doctor,startingTme,endingTime})
+//     await newSlot.save()
+//     res.status(200).json({error:false,message:"solt added",data:newSlot})
+// }
 
-export const getSlots=async(req: Request, res: Response, next: NextFunction)=>{
-    const id=req.user?.id
-    const allSlots=await Slot.find({doctor:id,isDeleted:false})
-    if(!allSlots){
-        next(new CustomError("Slots not found"))
-    }
-    res.status(200).json({error:false,data:allSlots})
-}
+// export const getSlots=async(req: Request, res: Response, next: NextFunction)=>{
+//     const id=req.user?.id
+//     const allSlots=await Slot.find({doctor:id,isDeleted:false})
+//     if(!allSlots){
+//         next(new CustomError("Slots not found"))
+//     }
+//     res.status(200).json({error:false,data:allSlots})
+// }
