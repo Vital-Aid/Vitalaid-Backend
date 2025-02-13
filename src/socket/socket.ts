@@ -1,15 +1,13 @@
 import http from "http";
 import { Server } from "socket.io";
-import path from "path";
 import express, { Application } from "express";
 
-export const app:Application = express();
-
+export const app: Application = express();
 export const server = http.createServer(app);
 
 export const io = new Server(server, {
     cors: {
-        origin: process.env.FRONTENT_URI,
+        origin: process.env.FRONTEND_URI, 
         methods: ["GET", "POST"],
     },
 });
@@ -17,14 +15,18 @@ export const io = new Server(server, {
 io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
 
-    socket.on("joinRoom", (userId) => {
-        console.log(`User joined room: ${userId}`);
+    socket.on("joinRoom", ({ userId, role }) => {
         socket.join(userId);
+        console.log(`${role} joined room: ${userId}`);
     });
 
-    socket.on("joingrouproom", (userid) => {
-        console.log(`User joined group room: ${userid}`);
-        socket.join(userid);
+    socket.on("sendMessage", ({ senderId, receiverId, message }) => {
+        console.log(`Message from ${senderId} to ${receiverId}: ${message}`);
+
+        io.to(receiverId).emit("receiveMessage", {
+            senderId,
+            message,
+        });
     });
 
     socket.on("disconnect", () => {
@@ -32,4 +34,4 @@ io.on("connection", (socket) => {
     });
 });
 
-app.set("io", io); 
+app.set("io", io);

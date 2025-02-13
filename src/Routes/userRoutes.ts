@@ -6,6 +6,7 @@ import { getRequestbyuser, makeRequest, removeRequest, updaterequest } from '../
 import { getAllEquipments, getEquipmentBYId } from '../Controller/Admin controllers/equipmentControllers'
 import { generateReport, getReportbyid,  } from '../Controller/User Controllers/reportControll'
 import { getmsgusr, msgtodr, newMessages } from '../Controller/Admin controllers/adminController'
+import { getmessagedusers, getmsgs, postchat } from '../Controller/User Controllers/messagecontroller'
 
 const userRoutes = express.Router()
 
@@ -28,6 +29,9 @@ userRoutes
     .post("/sendmessage",tryCatch(newMessages))
     .post("/sendmsgtodr",tryCatch(msgtodr))
     .get("/getusermsg",tryCatch(getmsgusr))
+    .post("/sendmsg",tryCatch(postchat))
+    .get("/messageof/:userId/:receiverId",tryCatch(getmsgs))
+    .get("/msgof/:doctorId",tryCatch(getmessagedusers))
 
     
 export default userRoutes;

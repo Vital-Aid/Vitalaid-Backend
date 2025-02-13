@@ -13,7 +13,7 @@ import volunteerRoute from './Routes/volonteersRoutes';
 import errorHandler from './Middleware/ErrorHandler';
 import donnersRoutes from './Routes/donorsRoutes';
 import adminRoute from './Routes/adminRoutes';
-import {app} from "./socket/socket"
+import { app, server } from "./socket/socket";
 dotenv.config();
 
 
@@ -61,6 +61,6 @@ app.all('*', (req: Request, res: Response, next: NextFunction) => {
 })
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
