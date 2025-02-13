@@ -102,7 +102,7 @@ export const getdrDetails = async (req: Request, res: Response, next: NextFuncti
         data: Details
     })
 }
-
+ 
 export const getallDetails = async (req: Request, res: Response, next: NextFunction) => {
    
         const Details = await DrDetails.find().populate({
