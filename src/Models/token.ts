@@ -18,12 +18,13 @@ const tokenSchema:Schema<tokentype>=new Schema({
         date:{type:String,required:true},
         status:{
             type:String,
-            enum:["pending","cancelled","Completed"]
+            enum:["pending","cancelled","Completed"],
+           
         },
         tokenNumber:{type:Number,required:true}
 
         
         
 })
-const Token=mongoose.model<tokenType>("Token",tokenSchema)
+const Token=mongoose.model<tokentype>("Token",tokenSchema)
 export default Token

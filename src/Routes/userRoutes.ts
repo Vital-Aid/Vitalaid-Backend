@@ -1,12 +1,13 @@
 import express from 'express'
 import tryCatch from '../utils/tryCatch'
-import { addDetails, blockUser, createToken, getblockedUsers, getDetails, getUserById, getUsers } from '../Controller/User Controllers/userController'
+import { addDetails, blockUser, createToken, getallTokens, getblockedUsers, getDetails, getUserById, getUsers } from '../Controller/User Controllers/userController'
 import { userAuth } from '../Middleware/authMiddleware'
 import { getRequestbyuser, makeRequest, removeRequest, updaterequest } from '../Controller/User Controllers/userEquipmentController'
 import { getAllEquipments, getEquipmentBYId } from '../Controller/Admin controllers/equipmentControllers'
 import { generateReport, getReportbyid,  } from '../Controller/User Controllers/reportControll'
 import { validateData } from '../Middleware/zodValidation'
 import { tokenValidationSchema } from '../Models/Validations/tokenValidation'
+import { gettokenNumber } from '../Controller/Admin controllers/doctorControll'
 
 const userRoutes = express.Router()
 
@@ -27,6 +28,8 @@ userRoutes
     .get("/getreportof/:id",tryCatch(getReportbyid))
     .get('/getequipmentbyid/:id',userAuth,tryCatch(getEquipmentBYId))
     .put('/cancellrequest/:id',userAuth,tryCatch(updaterequest))
-    .post('/createtoken',validateData(tokenValidationSchema),tryCatch(createToken))
+    .post('/createtoken',userAuth,validateData(tokenValidationSchema),tryCatch(createToken))
+    .get("/gettokenperday/:id",userAuth,tryCatch(gettokenNumber))
+    .get("/getalltokens",userAuth,tryCatch(getallTokens))
 export default userRoutes;
 

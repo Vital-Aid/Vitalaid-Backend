@@ -3,6 +3,7 @@ import User from "../../Models/UserModel";
 import CustomError from "../../utils/CustomError";
 import UserDetails from "../../Models/Userdetails";
 import Token from "../../Models/token";
+import mongoose from "mongoose";
 
 export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -98,11 +99,51 @@ export const getDetails = async (req: Request, res: Response, next: NextFunction
     res.status(200).json(userDetails)
 }
 
-export const createToken=async(req: Request, res: Response, next: NextFunction)=>{
-    const id=req.user?.id
-    const {status,date,doctorId,tokenNumber}=req.body
-    const newToken=new Token({status,date,doctorId,tokenNumber,userId:id})
-    await newToken.save()
-    res.status(200).json({status:true,message:'token created successfully',dat:newToken})
-}
+export const createToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const { date, doctorId, tokenNumber } = req.body;
+    const patientId = req.user?.id;  
 
+    if (!patientId) {
+        return next(new CustomError("Patient ID is required"));
+    }
+
+    const patientObjectId = new mongoose.Types.ObjectId(patientId); // Convert to ObjectId
+    const doctorObjectId = new mongoose.Types.ObjectId(doctorId);   // Convert doctorId as well
+
+    // Check if token already exists
+    const oldToken = await Token.findOne({
+        patientId: patientObjectId,
+        date: date,
+        doctorId: doctorObjectId,
+        tokenNumber: tokenNumber,
+    });
+
+    if (oldToken) {
+        return next(new CustomError("This token is already booked"));
+    } 
+
+    // Create new token
+    const newToken = new Token({ 
+        date, 
+        doctorId: doctorObjectId, 
+        tokenNumber, 
+        patientId: patientObjectId 
+    });
+
+    await newToken.save()
+        .then(() => {
+            res.status(200).json({ status: true, message: 'Token created successfully', data: newToken });
+        })
+        .catch((error) => {
+            console.error("🔥 Error:", error);
+            next(error);  
+        });
+}; 
+
+export const getallTokens=async(req: Request, res: Response, next: NextFunction)=>{
+    const tokens=await Token.find()
+    if(!tokens){
+        return next(new CustomError('tokens not available'))
+    }
+    res.status(200).json({status:true,message:'all tokens',data:tokens})
+}

@@ -3,7 +3,7 @@ import tryCatch from "../utils/tryCatch";
 import {getDoctersById, getDoctersByIdfordoctor, getDoctors} from "../Controller/User Controllers/doctorController";
 import { adminAuth, doctorAuth, userAuth } from "../Middleware/authMiddleware";
 import { upload } from "../Middleware/ImageUpload";
-import { addDetails, deleteDr, editDetails, getallDetails, getdrDetails } from "../Controller/Admin controllers/doctorControll";
+import { addDetails, addtokenPerDay, deleteDr, editDetails, getallDetails, getdrDetails, gettokenNumber } from "../Controller/Admin controllers/doctorControll";
 
 
 const routes = express.Router()
@@ -24,5 +24,7 @@ routes
     .get("/getdoctorsprofile",doctorAuth,tryCatch(getDoctersByIdfordoctor))
     // .post('/addslot',doctorAuth,tryCatch(addSlotes))
     // .get('/getslots',doctorAuth,tryCatch(getSlots))
+    .post("/addtokenperday",doctorAuth,tryCatch(addtokenPerDay))
+    
     
 export default routes

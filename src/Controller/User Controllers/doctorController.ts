@@ -37,13 +37,14 @@ export const getDoctors = async (req: Request, res: Response, next: NextFunction
 export const getDoctersById = async (req: Request, res: Response, next: NextFunction) => {
 
     const { id } = req.params;
+console.log("id:",id);
 
     const doctor = await Doctor.findById(id)
     if (!doctor) {
         return next(new CustomError('Docter not found', 404))
 
     }
-    res.status(200).json(doctor)
+    res.status(200).json({status:true, message:"docur by id" ,data:doctor})
 
 }
 
