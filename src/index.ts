@@ -13,6 +13,8 @@ import volunteerRoute from './Routes/volonteersRoutes';
 import errorHandler from './Middleware/ErrorHandler';
 import donnersRoutes from './Routes/donorsRoutes';
 import adminRoute from './Routes/adminRoutes';
+import http from 'http'
+import {Server} from "socket.io"
 dotenv.config();
 
 
@@ -28,8 +30,14 @@ mongoose
   .catch((error) => console.error("MongoDB connection error:", error));
 
 const app: Application = express();
-
-
+const server=http.createServer(app)
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000", 
+    methods: ["GET", "POST"],
+  },
+});
+app.set("socketio", io);
 const corsOptions = {
   origin: 'http://localhost:3000',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -53,6 +61,17 @@ app.use("/api/donors",donnersRoutes)
 app.use("/api/admin",adminRoute)
 
 app.use(errorHandler)
+
+io.on("connection",(socket)=>{
+  console.log("a user conected :",socket.id);
+  socket.on("book token",(data)=>{
+    console.log(" New token booked:", data);
+    io.emit("tokenUpdated", data)
+  })
+  socket.on("disconnect", () => {
+    console.log("A user disconnected:", socket.id);
+  });
+})
 
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
   const err = new CustomError(`cannot ${req.method} ${req.originalUrl}`, 404)

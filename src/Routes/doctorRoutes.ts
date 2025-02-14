@@ -4,6 +4,7 @@ import {getDoctersById, getDoctersByIdfordoctor, getDoctors} from "../Controller
 import { adminAuth, doctorAuth, userAuth } from "../Middleware/authMiddleware";
 import { upload } from "../Middleware/ImageUpload";
 import { addDetails, addtokenPerDay, deleteDr, editDetails, getallDetails, getdrDetails, gettokenNumber } from "../Controller/Admin controllers/doctorControll";
+import { getallTokens } from "../Controller/User Controllers/userController";
 
 
 const routes = express.Router()
@@ -25,6 +26,6 @@ routes
     // .post('/addslot',doctorAuth,tryCatch(addSlotes))
     // .get('/getslots',doctorAuth,tryCatch(getSlots))
     .post("/addtokenperday",doctorAuth,tryCatch(addtokenPerDay))
-    
+    .get("/alltoken",doctorAuth,tryCatch(getallTokens))
     
 export default routes

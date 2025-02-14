@@ -4,6 +4,7 @@ import CustomError from "../../utils/CustomError";
 import UserDetails from "../../Models/Userdetails";
 import Token from "../../Models/token";
 import mongoose from "mongoose";
+import { Server } from 'socket.io'
 
 export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -101,16 +102,16 @@ export const getDetails = async (req: Request, res: Response, next: NextFunction
 
 export const createToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { date, doctorId, tokenNumber } = req.body;
-    const patientId = req.user?.id;  
+    const patientId = req.user?.id;
 
     if (!patientId) {
         return next(new CustomError("Patient ID is required"));
     }
 
-    const patientObjectId = new mongoose.Types.ObjectId(patientId); // Convert to ObjectId
-    const doctorObjectId = new mongoose.Types.ObjectId(doctorId);   // Convert doctorId as well
+    const patientObjectId = new mongoose.Types.ObjectId(patientId);
+    const doctorObjectId = new mongoose.Types.ObjectId(doctorId);
 
-    // Check if token already exists
+
     const oldToken = await Token.findOne({
         patientId: patientObjectId,
         date: date,
@@ -120,30 +121,26 @@ export const createToken = async (req: Request, res: Response, next: NextFunctio
 
     if (oldToken) {
         return next(new CustomError("This token is already booked"));
-    } 
+    }
 
     // Create new token
-    const newToken = new Token({ 
-        date, 
-        doctorId: doctorObjectId, 
-        tokenNumber, 
-        patientId: patientObjectId 
+    const newToken = new Token({
+        date,
+        doctorId: doctorObjectId,
+        tokenNumber,
+        patientId: patientObjectId
     });
 
     await newToken.save()
-        .then(() => {
-            res.status(200).json({ status: true, message: 'Token created successfully', data: newToken });
-        })
-        .catch((error) => {
-            console.error("🔥 Error:", error);
-            next(error);  
-        });
-}; 
+    const io: Server = req.app.get("socketio")
+    io.emit("tokenUpdated", newToken);
+    res.status(200).json({ status: true, message: 'Token created successfully', data: newToken });
+};
 
-export const getallTokens=async(req: Request, res: Response, next: NextFunction)=>{
-    const tokens=await Token.find()
-    if(!tokens){
+export const getallTokens = async (req: Request, res: Response, next: NextFunction) => {
+    const tokens = await Token.find()
+    if (!tokens) {
         return next(new CustomError('tokens not available'))
     }
-    res.status(200).json({status:true,message:'all tokens',data:tokens})
+    res.status(200).json({ status: true, message: 'all tokens', data: tokens })
 }
