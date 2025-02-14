@@ -1,64 +1,99 @@
 import { Request, Response, NextFunction } from "express";
 import Chat from "../../Models/Chat";
 import CustomError from "../../utils/CustomError";
-import { nextTick } from "process";
-import { MWAA } from "aws-sdk";
 import User from "../../Models/UserModel";
 
-export const postchat = async (req: Request,res: Response,next: NextFunction) => {
+interface Message {
+    senderId: string;
+    senderModel: "User" | "Doctor";
+    receiverId: string;
+    receiverModel: "User" | "Doctor";
+    message: string;
+}
+ 
 
-    const { senderId, senderModel, receiverId, receiverModel, message } =req.body;
 
+export const postchat = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    const io = req.app.get("io");
+    const { senderId, senderModel, receiverId, receiverModel, message } = req.body;
+    
     if (!senderId || !senderModel || !receiverId || !receiverModel || !message) {
-        return next(new CustomError("All fields are required!" ,400))
+        return next(new CustomError("All fields are required!", 400));
     }
-
-    const newchat = new Chat({
+    
+    const newChat = new Chat({
         senderId,
         senderModel,
         receiverId,
         receiverModel,
         message,
     });
-
-    await newchat.save();
+    
+    await newChat.save();
+    
+   
+    io.to(receiverId).emit("receiveMessage", {
+        senderId,
+        message,
+    });
+    
     res.status(201).json({
         status: true,
-        message: "message sent",
-        data: newchat,
+        message: "Message sent",
+        data: newChat,
     });
 };
 
-export const getmsgs= async(req:Request,res:Response,next:NextFunction)=>{
+
+export const getmsgs = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
     const { userId, receiverId } = req.params;
 
     const chats = await Chat.find({
-      $or: [
-        { senderId: userId, receiverId },
-        { senderId: receiverId, receiverId: userId },
-      ],
+        $or: [
+            { senderId: userId, receiverId },
+            { senderId: receiverId, receiverId: userId },
+        ],
     }).sort({ createdAt: 1 });
 
-    if(!chats){
-        return next(new CustomError("there is no chats found for this parties",404))
+    if (!chats) {
+        return next(
+            new CustomError("there is no chats found for this parties", 404)
+        );
     }
 
     res.status(200).json({
-        status:true,
-        message:"mesage data",
-        data:chats
+        status: true,
+        message: "mesage data",
+        data: chats,
     });
-}
+};
 
-export const getmessagedusers= async(req:Request,res:Response,next:NextFunction)=>{
+export const getmessagedusers = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
     const { doctorId } = req.params;
 
-    const messages = await Chat.find({ receiverId: doctorId, receiverModel: "Doctor" })
-      .select("senderId")
-      .distinct("senderId");
+    const messages = await Chat.find({
+        receiverId: doctorId,
+        receiverModel: "Doctor",
+    })
+        .select("senderId")
+        .distinct("senderId");
 
     // Get user details
-    const users = await User.find({ _id: { $in: messages } }).select("name email");
+    const users = await User.find({ _id: { $in: messages } }).select(
+        "name email"
+    );
 
     res.status(200).json({ success: true, data: users });
-}
+};

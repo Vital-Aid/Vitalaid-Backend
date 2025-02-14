@@ -9,29 +9,31 @@ export const io = new Server(server, {
     cors: {
         origin: process.env.FRONTEND_URI, 
         methods: ["GET", "POST"],
+        
     },
 });
 
 io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
-
+  
     socket.on("joinRoom", ({ userId, role }) => {
-        socket.join(userId);
-        console.log(`${role} joined room: ${userId}`);
+      socket.join(userId);
+      console.log(`${role} joined room: ${userId}`);
     });
-
+  
     socket.on("sendMessage", ({ senderId, receiverId, message }) => {
-        console.log(`Message from ${senderId} to ${receiverId}: ${message}`);
-
-        io.to(receiverId).emit("receiveMessage", {
-            senderId,
-            message,
-        });
+      console.log(`Socket event: Message from ${senderId} to ${receiverId}: ${message}`);
+    
+      io.to(receiverId).emit("receiveMessage", {
+        senderId,
+        message,
+      });
     });
-
+  
     socket.on("disconnect", () => {
-        console.log("A user disconnected:", socket.id);
+      console.log("A user disconnected:", socket.id);
     });
-});
+  });
 
 app.set("io", io);
+
