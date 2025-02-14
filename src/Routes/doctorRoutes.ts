@@ -1,6 +1,6 @@
 import express from "express";
 import tryCatch from "../utils/tryCatch";
-import {getDoctersById, getDoctersByIdfordoctor, getDoctors} from "../Controller/User Controllers/doctorController";
+import { addSlotes, getDoctersById, getDoctersByIdfordoctor, getDoctors, getSlots } from "../Controller/User Controllers/doctorController";
 import { adminAuth, doctorAuth, userAuth } from "../Middleware/authMiddleware";
 import { upload } from "../Middleware/ImageUpload";
 import { addDetails, addtokenPerDay, deleteDr, editDetails, getallDetails, getdrDetails, gettokenNumber } from "../Controller/Admin controllers/doctorControll";
@@ -27,5 +27,7 @@ routes
     // .get('/getslots',doctorAuth,tryCatch(getSlots))
     .post("/addtokenperday",doctorAuth,tryCatch(addtokenPerDay))
     .get("/alltoken",doctorAuth,tryCatch(getallTokens))
-    
+        .get("/getdoctorsprofile",doctorAuth,tryCatch(getDoctersByIdfordoctor))
+    .post('/addslot',doctorAuth,tryCatch(addSlotes))
+    .get('/getslots',doctorAuth,tryCatch(getSlots))
 export default routes

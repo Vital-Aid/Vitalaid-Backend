@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import Doctor from "../../Models/Doctor";
 import CustomError from "../../utils/CustomError";
 import DrDetails from "../../Models/DoctorDetails";
-
+import Slot from "../../Models/Slotes";
 
 export const getDoctors = async (req: Request, res: Response, next: NextFunction) => {
 
