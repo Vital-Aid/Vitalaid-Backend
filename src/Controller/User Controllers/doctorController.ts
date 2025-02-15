@@ -3,6 +3,8 @@ import Doctor from "../../Models/Doctor";
 import CustomError from "../../utils/CustomError";
 import DrDetails from "../../Models/DoctorDetails";
 import Slot from "../../Models/Slotes";
+import Token from "../../Models/token";
+import dayjs from "dayjs";
 
 export const getDoctors = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -61,19 +63,37 @@ export const getDoctersByIdfordoctor = async (req: Request, res: Response, next:
 
 }
 
-// export const addSlotes=async(req: Request, res: Response, next: NextFunction)=>{
-//    const doctor=req.user?.id
-//     const{startingTme,endingTime}=req.body
-//     const newSlot=new Slot({doctor,startingTme,endingTime})
-//     await newSlot.save()
-//     res.status(200).json({error:false,message:"solt added",data:newSlot})
-// }
 
-// export const getSlots=async(req: Request, res: Response, next: NextFunction)=>{
-//     const id=req.user?.id
-//     const allSlots=await Slot.find({doctor:id,isDeleted:false})
-//     if(!allSlots){
-//         next(new CustomError("Slots not found"))
-//     }
-//     res.status(200).json({error:false,data:allSlots})
-// }
+export const getallTokens = async (req: Request, res: Response, next: NextFunction) => {
+    const {id}=req.params
+    const tokens = await Token.find({doctorId:id}).populate("patientId","name email phone")
+
+    if (!tokens) {
+        return next(new CustomError('tokens not available'))
+    }
+    console.log('fdjguh',id);
+    
+    console.log("sff",tokens);
+    
+    res.status(200).json({ status: true, message: 'all tokens', data: tokens })
+}
+
+export const getallTokensofEachDoctor = async (req: Request, res: Response, next: NextFunction) => {
+   
+    
+    const id=req.user?.id
+    const{date}=req.query 
+    console.log(date);
+    console.log('id',id);
+    
+    // const queryDate = dayjs(date as string, "DD/MM/YYYY").format("DD/MM/YYYY").trim();
+    // console.log("query:",queryDate);
+    
+    const tokens = await Token.find({doctorId:id,date:date}).populate("patientId","name email phone profileImage")
+    if (!tokens) {
+        return next(new CustomError('tokens not available'))
+    }
+   console.log('skdhfgyd',tokens);
+   
+    res.status(200).json({ status: true, message: 'all tokens', data: tokens })
+}

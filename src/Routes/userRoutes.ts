@@ -1,6 +1,6 @@
 import express from 'express'
 import tryCatch from '../utils/tryCatch'
-import { addDetails, blockUser, createToken, getallTokens, getblockedUsers, getDetails, getUserById, getUsers } from '../Controller/User Controllers/userController'
+import { addDetails, blockUser, createToken, getblockedUsers, getDetails, getUserById, getUsers } from '../Controller/User Controllers/userController'
 import { userAuth } from '../Middleware/authMiddleware'
 import { getRequestbyuser, makeRequest, removeRequest, updaterequest } from '../Controller/User Controllers/userEquipmentController'
 import { getAllEquipments, getEquipmentBYId } from '../Controller/Admin controllers/equipmentControllers'
@@ -8,6 +8,7 @@ import { generateReport, getReportbyid,  } from '../Controller/User Controllers/
 import { validateData } from '../Middleware/zodValidation'
 import { tokenValidationSchema } from '../Models/Validations/tokenValidation'
 import { gettokenNumber } from '../Controller/Admin controllers/doctorControll'
+import { getallTokens } from '../Controller/User Controllers/doctorController'
 
 const userRoutes = express.Router()
 
@@ -30,6 +31,6 @@ userRoutes
     .put('/cancellrequest/:id',userAuth,tryCatch(updaterequest))
     .post('/createtoken',userAuth,validateData(tokenValidationSchema),tryCatch(createToken))
     .get("/gettokenperday/:id",userAuth,tryCatch(gettokenNumber))
-    .get("/getalltokens",userAuth,tryCatch(getallTokens))
+    .get("/getalltokens/:id",userAuth,tryCatch(getallTokens))
 export default userRoutes;
 

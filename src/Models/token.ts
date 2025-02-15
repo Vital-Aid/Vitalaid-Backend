@@ -19,6 +19,7 @@ const tokenSchema:Schema<tokentype>=new Schema({
         status:{
             type:String,
             enum:["pending","cancelled","Completed"],
+            default:"pending"
            
         },
         tokenNumber:{type:Number,required:true}

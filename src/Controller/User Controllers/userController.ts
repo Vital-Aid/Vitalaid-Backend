@@ -137,10 +137,3 @@ export const createToken = async (req: Request, res: Response, next: NextFunctio
     res.status(200).json({ status: true, message: 'Token created successfully', data: newToken });
 };
 
-export const getallTokens = async (req: Request, res: Response, next: NextFunction) => {
-    const tokens = await Token.find()
-    if (!tokens) {
-        return next(new CustomError('tokens not available'))
-    }
-    res.status(200).json({ status: true, message: 'all tokens', data: tokens })
-}

@@ -9,14 +9,15 @@ export const tokenValidationSchema = z.object({
     { message: "Invalid doctor ID format" }
   ),  
   date: z
-    .string()
-    .transform((date) => {
-      const [day, month, year] = date.split("-");
-      return `${year}-${month}-${day}`;
-    })
-    .refine((date) => !isNaN(Date.parse(date)), {
-      message: "Invalid date format",
-    }),
+  .string()
+  .transform((date) => {
+    const sanitizedDate = date.replace(/\//g, "-"); 
+    const [day, month, year] = sanitizedDate.split("-");
+    return `${year}-${month}-${day}`;
+  })
+  .refine((date) => !isNaN(Date.parse(date)), {
+    message: "Invalid date format",
+  }),
   status: statusEnum.default("pending"), 
   tokenNumber: z
     .number()

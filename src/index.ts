@@ -64,7 +64,7 @@ app.use(errorHandler)
 
 io.on("connection",(socket)=>{
   console.log("a user conected :",socket.id);
-  socket.on("book token",(data)=>{
+  socket.on("bookToken",(data)=>{
     console.log(" New token booked:", data);
     io.emit("tokenUpdated", data)
   })
@@ -79,6 +79,9 @@ app.all('*', (req: Request, res: Response, next: NextFunction) => {
 })
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+// app.listen(PORT, () => {
+//   console.log(`Server running on http://localhost:${PORT}`);
+// });
+server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
