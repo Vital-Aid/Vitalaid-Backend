@@ -90,8 +90,7 @@ export const getdrDetails = async (req: Request, res: Response, next: NextFuncti
 
 
     const Details = await DrDetails.find({ doctor: req.params.id }).populate("doctor", "name email phone _id")
-    console.log('Details',Details);
-    console.log('12', req.params.id);
+  
     
     
     if (!Details) {
