@@ -54,12 +54,16 @@ export const getDoctersByIdfordoctor = async (req: Request, res: Response, next:
 
     const id = req.user?.id;
 
-    const doctor = await DrDetails.findOne({doctor:id}).populate('doctor', 'name email phone ')
+    const doctor = await DrDetails.findOne({ doctor: id }).populate('doctor', 'name email phone ')
     if (!doctor) {
         return next(new CustomError('Docter not found', 404))
 
     }
-    res.status(200).json({error:false,data:doctor})
+    res.status(200).json({
+        status: true,
+        message: "dr data",
+        data: doctor,
+    })
 
 }
 

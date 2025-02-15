@@ -1,6 +1,8 @@
 import { Response, Request, NextFunction } from 'express'
 import Event from '../../Models/Event'
 import CustomError from '../../utils/CustomError'
+import Message from '../../Models/Message';
+import { error } from 'console';
 
 
 interface file extends Express.Multer.File {
@@ -109,4 +111,44 @@ export const deleteEvent = async (req: Request, res: Response, next: NextFunctio
 
     res.status(200).json({ error: false, event: deleteEvent });
 
+}
+
+export const newMessages =async(req:Request,res:Response,next:NextFunction)=>{
+    const{message}=req.body
+    const newmessage= new Message({
+        message,
+        todoctor:false
+    })
+    await newmessage.save()
+    res.status(201).json({
+        error:false,
+        message:"message created",
+        data:newmessage
+    })
+}
+
+export const msgtodr = async(req:Request,res:Response,next:NextFunction)=>{
+    const{message}=req.body
+    const newmessage= new Message({
+        message,
+        todoctor:true
+    })
+    await newmessage.save()
+    res.status(201).json({
+        error:false,
+        message:"message created for doctor",
+        data:newmessage
+    })
+}
+
+
+export const getmsgusr= async(req:Request,res:Response,next:NextFunction)=>{
+    const message= await Message.find({todoctor:false})
+    if(!message){
+        return next(new CustomError("message not found"))
+    }
+    res.status(200).json({
+        message:"user message",
+        data:message
+    })
 }

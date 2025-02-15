@@ -25,12 +25,16 @@ userRoutes
     .post("/addDetails/:id",userAuth,tryCatch(addDetails))
     .get("/getdetails/:id",tryCatch(getDetails))
     .post("/generatereport",tryCatch(generateReport)) 
-    
     .get("/getreportof/:id",tryCatch(getReportbyid))
     .get('/getequipmentbyid/:id',userAuth,tryCatch(getEquipmentBYId))
     .put('/cancellrequest/:id',userAuth,tryCatch(updaterequest))
-    .post('/createtoken',userAuth,validateData(tokenValidationSchema),tryCatch(createToken))
-    .get("/gettokenperday/:id",userAuth,tryCatch(gettokenNumber))
-    .get("/getalltokens/:id",userAuth,tryCatch(getallTokens))
+    .post("/sendmessage",tryCatch(newMessages))
+    .post("/sendmsgtodr",tryCatch(msgtodr))
+    .get("/getusermsg",tryCatch(getmsgusr))
+    .post("/sendmsg",tryCatch(postchat))
+    .get("/messageof/:userId/:receiverId",tryCatch(getmsgs))
+    .get("/msgof/:doctorId",tryCatch(getmessagedusers))
+
+    
 export default userRoutes;
 
