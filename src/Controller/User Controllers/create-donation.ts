@@ -8,7 +8,6 @@ const razorpay = new Razorpay({
     key_secret: process.env.RAZORPAY_KEY_SECRET as string,
   });
   
-  // Route to create Razorpay Order for donation
   export const createOrder=async (req:Request,res:Response,next: NextFunction)=>{
    
       const { amount } = req.body;  // Amount in paisa (1 INR = 100 paisa)

@@ -76,3 +76,14 @@ export const getSlots=async(req: Request, res: Response, next: NextFunction)=>{
     }
     res.status(200).json({error:false,data:allSlots})
 }
+
+
+export const searchDoctors = async (req: Request, res: Response) => {
+    const doctors = await Doctor.find() 
+    const specialties = await DrDetails.find()
+  
+    res.status(200).json({ doctors, specialties });
+  };
+
+
+
