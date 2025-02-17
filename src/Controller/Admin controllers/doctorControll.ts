@@ -18,9 +18,10 @@ interface FileWithLocation extends Express.Multer.File {
 
 export const viewalldoctors = async (req: Request, res: Response, next: NextFunction) => {
 
-
-    const page = Number(req.query.page)
-    const limit = Number(req.query.limit)
+    let { page = 1, limit = 8 } = req.query; 
+    
+    page = Number(page);
+    limit = Number(limit);
 
 
     if (isNaN(page) || isNaN(limit) || page < 1 || limit < 1) {
@@ -89,8 +90,7 @@ export const getdrDetails = async (req: Request, res: Response, next: NextFuncti
 
 
     const Details = await DrDetails.find({ doctor: req.params.id }).populate("doctor", "name email phone _id")
-    console.log('Details',Details);
-    console.log('12', req.params.id);
+  
     
     
     if (!Details) {

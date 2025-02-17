@@ -24,7 +24,6 @@ export const getUsers = async (req: Request, res: Response, next: NextFunction) 
         users: users,
         totalPages: Math.ceil(totalusers / limit),
         currentPage: page,
-
     })
 }
 
@@ -53,6 +52,7 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
     
     res.status(200).json({status:true,mesage:"medical history",data:medhistory })
 }
+
 export const blockUser = async (req: Request, res: Response, next: NextFunction) => {
 
     const { _id } = req.params;

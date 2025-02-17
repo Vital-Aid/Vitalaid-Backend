@@ -51,30 +51,34 @@ export const getDoctersByIdfordoctor = async (req: Request, res: Response, next:
 
     const id = req.user?.id;
 
-    const doctor = await DrDetails.findOne({doctor:id}).populate('doctor', 'name email phone ')
+    const doctor = await DrDetails.findOne({ doctor: id }).populate('doctor', 'name email phone ')
     if (!doctor) {
         return next(new CustomError('Docter not found', 404))
 
     }
-    res.status(200).json({error:false,data:doctor})
+    res.status(200).json({
+        status: true,
+        message: "dr data",
+        data: doctor,
+    })
 
 }
 
-export const addSlotes=async(req: Request, res: Response, next: NextFunction)=>{
-   const doctor=req.user?.id
-    const{startingTme,endingTime}=req.body
-    const newSlot=new Slot({doctor,startingTme,endingTime})
+export const addSlotes = async (req: Request, res: Response, next: NextFunction) => {
+    const doctor = req.user?.id
+    const { startingTme, endingTime } = req.body
+    const newSlot = new Slot({ doctor, startingTme, endingTime })
     await newSlot.save()
-    res.status(200).json({error:false,message:"solt added",data:newSlot})
+    res.status(200).json({ error: false, message: "solt added", data: newSlot })
 }
 
-export const getSlots=async(req: Request, res: Response, next: NextFunction)=>{
-    const id=req.user?.id
-    const allSlots=await Slot.find({doctor:id,isDeleted:false})
-    if(!allSlots){
+export const getSlots = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.user?.id
+    const allSlots = await Slot.find({ doctor: id, isDeleted: false })
+    if (!allSlots) {
         next(new CustomError("Slots not found"))
     }
-    res.status(200).json({error:false,data:allSlots})
+    res.status(200).json({ error: false, data: allSlots })
 }
 
 

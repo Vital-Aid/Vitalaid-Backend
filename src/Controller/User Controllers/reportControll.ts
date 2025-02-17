@@ -80,6 +80,12 @@ export const generateReport = async (
 
     const reportText = candidates[0]?.content?.parts?.[0]?.text;
     const normalText = reportText.replace(/\*\*/g, "");
+    const healthStatusMatch = reportText.match(/Health Status:\s*(?:Categorize as:)?\s*\n?-?\s*\*\*(.*?)\*\*/i);
+
+    console.log("jjjjjj",healthStatusMatch);
+    
+    const healthStatus = healthStatusMatch ? healthStatusMatch[1] : "Unknown";
+
   
     if (!reportText) {
       throw new CustomError(
@@ -91,6 +97,7 @@ export const generateReport = async (
     const newhistory = new MedHistory({
       User: userid,
       report: normalText,
+      healthstatus:healthStatus
     });
 
     await newhistory.save();

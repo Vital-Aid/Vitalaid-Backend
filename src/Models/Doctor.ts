@@ -6,19 +6,19 @@ interface DoctorType extends Document {
   password: string;
   phone: string;
   isDeleted: boolean;
-  drDetails: mongoose.ObjectId,
-  
+  drDetails: mongoose.ObjectId;
 }
 
 const DoctorSchema: Schema<DoctorType> = new Schema(
   {
     drDetails: {
-            type: mongoose.Types.ObjectId, ref:"DrDetails",
-            required: true
-        },
+      type: mongoose.Types.ObjectId,
+      ref: "DrDetails",
+      required: true,
+    },
     name: {
       type: String,
-      required:true
+      required: true,
     },
     email: {
       type: String,

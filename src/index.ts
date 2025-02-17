@@ -14,6 +14,7 @@ import errorHandler from './Middleware/ErrorHandler';
 import donnersRoutes from './Routes/donorsRoutes';
 import adminRoute from './Routes/adminRoutes';
 import donationRoutes from'./Routes/donetionRoutes'
+import { app, server } from "./socket/socket";
 dotenv.config();
 
 
@@ -28,11 +29,11 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((error) => console.error("MongoDB connection error:", error));
 
-const app: Application = express();
+
 
 
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: process.env.FRONTENT_URI,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization', "X-MongoDb-Id"],
   credentials: true,
@@ -61,6 +62,6 @@ app.all('*', (req: Request, res: Response, next: NextFunction) => {
 })
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
