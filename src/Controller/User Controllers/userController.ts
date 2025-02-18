@@ -4,27 +4,26 @@ import CustomError from "../../utils/CustomError";
 import UserDetails from "../../Models/Userdetails";
 import Token from "../../Models/token";
 import mongoose from "mongoose";
-import { Server } from 'socket.io'
+import { Server } from "socket.io";
 import Doctor from "../../Models/Doctor";
 import path from "path";
 import DrDetails, { DrDetailsType } from "../../Models/DoctorDetails";
 import { DoctorType } from "../../Models/Doctor";
 
-
 interface DoctorPopulated {
-    _id: mongoose.Types.ObjectId;
-    name: string;
-    email: string;
-    phone: string;
-    drDetails?: DrDetailsType|null  
+  _id: mongoose.Types.ObjectId;
+  name: string;
+  email: string;
+  phone: string;
+  drDetails?: DrDetailsType | null;
 }
 
 interface TokenWithDoctor {
-    _id: mongoose.Types.ObjectId;
-    date: string;
-    status: string;
-    tokenNumber: number;
-    doctorId: DoctorPopulated;
+  _id: mongoose.Types.ObjectId;
+  date: string;
+  status: string;
+  tokenNumber: number;
+  doctorId: DoctorPopulated;
 }
 
 export const getUsers = async (
@@ -146,7 +145,7 @@ export const getDetails = async (
   if (!userDetails) {
     return next(new CustomError("No Details found for this user", 404));
   }
-  res.status(200).json(userDetails);
+  res.status(200).json( userDetails );
 };
 
 type editDatas = {
@@ -168,7 +167,7 @@ export const editDetails = async (
 ): Promise<void> => {
   const { age, occupation, address, gender, bloodgroup, profileImage } =
     req.body;
-  const userId = req.params.id;
+  const userId = req.user?.id;
 
   const updateData: editDatas = {
     age,
@@ -204,4 +203,120 @@ export const searchDoctors = async (req: Request, res: Response) => {
   const specialties = await DrDetails.find();
 
   res.status(200).json({ doctors, specialties });
+};
+
+export const createToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { date, doctorId, tokenNumber } = req.body;
+  const patientId = req.user?.id;
+
+  if (!patientId) {
+    return next(new CustomError("Patient ID is required"));
+  }
+
+  const patientObjectId = new mongoose.Types.ObjectId(patientId);
+  const doctorObjectId = new mongoose.Types.ObjectId(doctorId);
+
+  const oldToken = await Token.findOne({
+    patientId: patientObjectId,
+    date: date,
+    doctorId: doctorObjectId,
+    tokenNumber: tokenNumber,
+  });
+
+  if (oldToken) {
+    return next(new CustomError("This token is already booked"));
+  }
+
+  // Create new token
+  const newToken = new Token({
+    date,
+    doctorId: doctorObjectId,
+    tokenNumber,
+    patientId: patientObjectId,
+  });
+
+  await newToken.save();
+  const io: Server = req.app.get("io");
+  io.emit("tokenUpdated", newToken);
+  res
+    .status(200)
+    .json({
+      status: true,
+      message: "Token created successfully",
+      data: newToken,
+    });
+};
+
+export const getallTokenByUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  console.log("Fetching tokens for user...");
+
+  const id = req.user?.id;
+  const { date } = req.query;
+
+  console.log("User ID:", id, "Date:", date);
+
+  // Step 1: Fetch tokens and populate doctor details
+  const tokens = (await Token.find({ patientId: id, date: date })
+    .populate<{ doctorId: DoctorPopulated }>("doctorId", "name email phone")
+    .lean()) as TokenWithDoctor[];
+
+  if (!tokens || tokens.length === 0) {
+    return next(new CustomError("Tokens not available."));
+  }
+
+  await Promise.all(
+    tokens.map(async (token) => {
+      if (token.doctorId?._id) {
+        const drDetails = await DrDetails.findOne({
+          doctor: token.doctorId._id,
+        })
+          .select(
+            "qualification specialization availability profileImage description hospital address certificates"
+          )
+          .lean();
+        token.doctorId.drDetails = drDetails || null;
+      }
+    })
+  );
+
+  console.log(
+    "Tokens fetched with DrDetails:",
+    JSON.stringify(tokens, null, 2)
+  );
+
+  res.status(200).json({
+    status: true,
+    message: "User's tokens fetched successfully.",
+    data: tokens,
+  });
+};
+
+export const getTokenByUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const id = req.user?.id;
+
+  const tokens = (await Token.find({ patientId: id })
+    .populate<{ doctorId: DoctorPopulated }>("doctorId", "name email phone")
+    .lean()) as TokenWithDoctor[];
+
+  if (!tokens || tokens.length === 0) {
+    return next(new CustomError("Tokens not available."));
+  }
+
+  res.status(200).json({
+    status: true,
+    message: "User's tokens fetched successfully.",
+    data: tokens,
+  });
 };

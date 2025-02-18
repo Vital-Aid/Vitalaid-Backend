@@ -4,9 +4,8 @@ import { editAvailability, editTokenStatus, getDoctersById, getDoctersByIdfordoc
 import { adminAuth, doctorAuth, userAuth } from "../Middleware/authMiddleware";
 import { upload } from "../Middleware/ImageUpload";
 import { addDetails, addtokenPerDay, deleteDr, editDetails, getallDetails, getdrDetails, gettokenNumber } from "../Controller/Admin controllers/doctorControll";
-import { validateData } from "../Middleware/zodValidation";
-import { tokenValidationSchema } from "../Models/Validations/tokenValidation";
-import { searchDoctors } from "../Controller/User Controllers/userController";
+
+
 
 
 const routes = express.Router()
