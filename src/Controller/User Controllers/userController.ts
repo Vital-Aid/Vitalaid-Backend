@@ -86,7 +86,6 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
   }
 
   const result = { medHistory, userDetails };
-  console.log('results:kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk', JSON.stringify(result, null, 2));
 
   res.status(200).json({
       status: true,
