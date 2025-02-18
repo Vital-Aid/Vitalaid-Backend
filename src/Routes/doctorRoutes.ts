@@ -1,9 +1,10 @@
 import express from "express";
 import tryCatch from "../utils/tryCatch";
-import { addSlotes, getDoctersById, getDoctersByIdfordoctor, getDoctors, getSlots, searchDoctors } from "../Controller/User Controllers/doctorController";
+import { addSlotes, getDoctersById, getDoctersByIdfordoctor, getDoctors, getSlots, } from "../Controller/User Controllers/doctorController";
 import { adminAuth, doctorAuth, userAuth } from "../Middleware/authMiddleware";
 import { upload } from "../Middleware/ImageUpload";
 import { addDetails, deleteDr, editDetails, getallDetails, getdrDetails } from "../Controller/Admin controllers/doctorControll";
+import { searchDoctors } from "../Controller/User Controllers/userController";
 
 
 const routes = express.Router()
