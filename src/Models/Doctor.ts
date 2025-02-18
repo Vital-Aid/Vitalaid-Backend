@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-interface DoctorType extends Document {
+export interface DoctorType extends Document {
   name?: string;
   email: string;
   password: string;

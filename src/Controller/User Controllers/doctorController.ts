@@ -39,7 +39,7 @@ export const getDoctors = async (req: Request, res: Response, next: NextFunction
 export const getDoctersById = async (req: Request, res: Response, next: NextFunction) => {
 
     const { id } = req.params;
-console.log("id:",id);
+
 
     const doctor = await Doctor.findById(id)
     if (!doctor) {
@@ -75,29 +75,43 @@ export const getallTokens = async (req: Request, res: Response, next: NextFuncti
     if (!tokens) {
         return next(new CustomError('tokens not available'))
     }
-    console.log('fdjguh',id);
-    
-    console.log("sff",tokens);
-    
+
     res.status(200).json({ status: true, message: 'all tokens', data: tokens })
 }
 
 export const getallTokensofEachDoctor = async (req: Request, res: Response, next: NextFunction) => {
-   
-    
     const id=req.user?.id
     const{date}=req.query 
-    console.log(date);
-    console.log('id',id);
-    
-    // const queryDate = dayjs(date as string, "DD/MM/YYYY").format("DD/MM/YYYY").trim();
-    // console.log("query:",queryDate);
-    
+   
     const tokens = await Token.find({doctorId:id,date:date}).populate("patientId","name email phone profileImage")
     if (!tokens) {
         return next(new CustomError('tokens not available'))
-    }
-   console.log('skdhfgyd',tokens);
-   
+    }  
     res.status(200).json({ status: true, message: 'all tokens', data: tokens })
+}
+
+export const editTokenStatus=async(req: Request, res: Response, next: NextFunction)=>{
+   console.log('jsdvchgs');
+   
+    const {status}=req.body
+    const{id}=req.params
+    console.log("id",id);
+    console.log(status);
+    
+    
+    const updateToken=await Token.findByIdAndUpdate(id,{status:status},{new:true})
+    res.status(200).json({status:true,message:'token status updated successfully',data:updateToken})
+}
+
+export const editAvailability=async(req: Request, res: Response, next: NextFunction)=>{
+    const id=req.user?.id
+    const {endingTime,startingTme}=req.body
+    console.log(typeof(endingTime),typeof(startingTme));
+    
+    const newavailability=`${startingTme}-${endingTime}`
+    console.log(newavailability);
+    
+    const editedavailability=await DrDetails.findOneAndUpdate({doctor:id},{availability:newavailability},{new:true})
+    res.status(200).json({status:true,message:'availability edited successfully',data:editedavailability})
+
 }

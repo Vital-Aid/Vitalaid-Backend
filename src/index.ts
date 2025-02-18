@@ -29,8 +29,6 @@ mongoose
   .catch((error) => console.error("MongoDB connection error:", error));
 
 
-
-
 const corsOptions = {
   origin: process.env.FRONTENT_URI,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -44,27 +42,18 @@ app.use(express.json());
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/auth",authRoute)
-app.use("/api/doctors",docterRouts)
-app.use("/api/events",eventRoutes)
-app.use("/api/equipment",equipmentRoute)
-app.use("/api/users",userRoutes)
-app.use("/api/volunteers",volunteerRoute)
-app.use("/api/donors",donnersRoutes)
-app.use("/api/admin",adminRoute)
+app.use("/api/auth", authRoute)
+app.use("/api/doctors", docterRouts)
+app.use("/api/events", eventRoutes)
+app.use("/api/equipment", equipmentRoute)
+app.use("/api/users", userRoutes)
+app.use("/api/volunteers", volunteerRoute)
+app.use("/api/donors", donnersRoutes)
+app.use("/api/admin", adminRoute)
 
 app.use(errorHandler)
 
-io.on("connection",(socket)=>{
-  console.log("a user conected :",socket.id);
-  socket.on("bookToken",(data)=>{
-    console.log(" New token booked:", data);
-    io.emit("tokenUpdated", data)
-  })
-  socket.on("disconnect", () => {
-    console.log("A user disconnected:", socket.id);
-  });
-})
+
 
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
   const err = new CustomError(`cannot ${req.method} ${req.originalUrl}`, 404)

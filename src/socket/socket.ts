@@ -29,7 +29,12 @@ io.on("connection", (socket) => {
         message,
       });
     });
-  
+
+    socket.on("bookToken",(data)=>{
+      console.log(" New token booked:", data);
+      io.emit("tokenUpdated", data)
+    })
+
     socket.on("disconnect", () => {
       console.log("A user disconnected:", socket.id);
     });

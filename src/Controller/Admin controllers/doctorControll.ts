@@ -3,6 +3,7 @@ import { Response, Request, NextFunction } from "express";
 import CustomError from "../../utils/CustomError";
 import DrDetails from "../../Models/DoctorDetails";
 import TokenPerDay from "../../Models/totalToken";
+import Token from "../../Models/token";
 
 interface FileWithLocation extends Express.Multer.File {
     fieldname: string;
@@ -197,7 +198,7 @@ export const gettokenNumber = async (req: Request, res: Response, next: NextFunc
     const {id}= req.params
 
     const totaltokens = await TokenPerDay.findOne({ doctorId: id })
-    console.log("sol",totaltokens);
+   
     
     res.status(200).json({ status: true, message: 'total token', data: totaltokens })
 
