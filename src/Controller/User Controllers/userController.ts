@@ -35,9 +35,9 @@ export const getUsers = async (req: Request, res: Response, next: NextFunction) 
     if (isNaN(page) || isNaN(limit) || page < 1 || limit < 1) {
         return next(new CustomError("Invalid pagination parameters", 400));
     }
-    const totalusers = await User.countDocuments({ isDeleted: false, blocked: false })
+    const totalusers = await User.countDocuments({ isDeleted: false, })
 
-    const users = await User.find({ isDeleted: false, blocked: false }).skip((page - 1) * limit).limit(limit);
+    const users = await User.find({ isDeleted: false, }).skip((page - 1) * limit).limit(limit);
 
     if (!users) {
         return next(new CustomError('users not found', 404))
@@ -63,13 +63,17 @@ export const getblockedUsers = async (req: Request, res: Response, next: NextFun
 
 export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
 
-    const { _id } = req.params;
-    const user = await User.findById(_id)
-    if (!user) {
+    const {id}= req.params
+    
+    const medhistory = await MedHistory.find({User:id}).populate('User',"name email phone  occupation address gender bloodgroup age ")
+    if (!medhistory) {
         return next(new CustomError("user not found", 404))
 
     }
-    res.status(200).json({ user: user })
+    
+    console.log(medhistory ,'medhistory');
+    
+    res.status(200).json({status:true,mesage:"medical history",data:medhistory })
 }
 
 export const blockUser = async (req: Request, res: Response, next: NextFunction) => {

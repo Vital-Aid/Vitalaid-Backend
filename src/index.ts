@@ -13,6 +13,7 @@ import volunteerRoute from './Routes/volonteersRoutes';
 import errorHandler from './Middleware/ErrorHandler';
 import donnersRoutes from './Routes/donorsRoutes';
 import adminRoute from './Routes/adminRoutes';
+import donationRoutes from'./Routes/donetionRoutes'
 import { app, server } from "./socket/socket";
 dotenv.config();
 
@@ -42,15 +43,15 @@ app.use(express.json());
 app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/auth", authRoute)
-app.use("/api/doctors", docterRouts)
-app.use("/api/events", eventRoutes)
-app.use("/api/equipment", equipmentRoute)
-app.use("/api/users", userRoutes)
-app.use("/api/volunteers", volunteerRoute)
-app.use("/api/donors", donnersRoutes)
-app.use("/api/admin", adminRoute)
-
+app.use("/api/auth",authRoute)
+app.use("/api/doctors",docterRouts)
+app.use("/api/events",eventRoutes)
+app.use("/api/equipment",equipmentRoute)
+app.use("/api/users",userRoutes)
+app.use("/api/volunteers",volunteerRoute)
+app.use("/api/donors",donnersRoutes)
+app.use("/api/admin",adminRoute)
+app.use("/api/donation",donationRoutes)
 app.use(errorHandler)
 
 

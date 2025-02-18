@@ -1,6 +1,6 @@
 import express from "express";
 import tryCatch from "../utils/tryCatch";
-import { editAvailability, editTokenStatus, getDoctersById, getDoctersByIdfordoctor, getDoctors, getallTokens, getallTokensofEachDoctor } from "../Controller/User Controllers/doctorController";
+import { editAvailability, editTokenStatus, getDoctersById, getDoctersByIdfordoctor, getDoctors, getallTokens, getallTokensofEachDoctor, searchDoctors } from "../Controller/User Controllers/doctorController";
 import { adminAuth, doctorAuth, userAuth } from "../Middleware/authMiddleware";
 import { upload } from "../Middleware/ImageUpload";
 import { addDetails, addtokenPerDay, deleteDr, editDetails, getallDetails, getdrDetails, gettokenNumber } from "../Controller/Admin controllers/doctorControll";
@@ -30,4 +30,5 @@ routes
     .get('/tokensofeachdoctors', doctorAuth, tryCatch(getallTokensofEachDoctor))
     .put('/updatetoken/:id', doctorAuth,tryCatch(editTokenStatus))
     .put('/updateavailability',doctorAuth,tryCatch(editAvailability))
+    .get('/searchDoctors',tryCatch(searchDoctors))
 export default routes

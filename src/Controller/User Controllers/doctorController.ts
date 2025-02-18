@@ -115,3 +115,14 @@ export const editAvailability=async(req: Request, res: Response, next: NextFunct
     res.status(200).json({status:true,message:'availability edited successfully',data:editedavailability})
 
 }
+
+
+export const searchDoctors = async (req: Request, res: Response) => {
+    const doctors = await Doctor.find() 
+    const specialties = await DrDetails.find()
+  
+    res.status(200).json({ doctors, specialties });
+  };
+
+
+
