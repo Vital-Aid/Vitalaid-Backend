@@ -18,7 +18,7 @@ routes
     .get('/getDoctorsById/:id', adminAuth, tryCatch(getDoctersById))
     .get('/getDoctorById/:id', tryCatch(getDoctersById))
 
-    .post("/postdetailsof", adminAuth, upload.fields([{ name: "profileImage", maxCount: 1 }, { name: "certificates", maxCount: 5 }]), tryCatch(addDetails))
+    .post("/postdetailsof", adminAuth,  tryCatch(addDetails))
     .get("/getDetailsof/:id", adminAuth, tryCatch(getdrDetails))
     .get("/getdetail/:id", tryCatch(getdrDetails))//
     .put("/editdetailsof/:id", adminAuth, upload.fields([{ name: "profileImage", maxCount: 1 }, { name: "certificates", maxCount: 5 }]), tryCatch(editDetails))
