@@ -30,8 +30,6 @@ mongoose
   .catch((error) => console.error("MongoDB connection error:", error));
 
 
-
-
 const corsOptions = {
   origin: process.env.FRONTENT_URI,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -55,6 +53,8 @@ app.use("/api/donors",donnersRoutes)
 app.use("/api/admin",adminRoute)
 app.use("/api/donation",donationRoutes)
 app.use(errorHandler)
+
+
 
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
   const err = new CustomError(`cannot ${req.method} ${req.originalUrl}`, 404)

@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-interface DrDetailsType extends Document {
+export interface DrDetailsType extends Document {
     doctor: mongoose.ObjectId,
     qualification: string[],
     specialization: string[],

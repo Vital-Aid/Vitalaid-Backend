@@ -2,9 +2,30 @@ import { Request, Response, NextFunction } from "express";
 import User from "../../Models/UserModel";
 import CustomError from "../../utils/CustomError";
 import UserDetails from "../../Models/Userdetails";
-import MedHistory from "../../Models/Medicalhistory";
+import Token from "../../Models/token";
+import mongoose from "mongoose";
+import { Server } from 'socket.io'
 import Doctor from "../../Models/Doctor";
-import DrDetails from "../../Models/DoctorDetails";
+import path from "path";
+import DrDetails, { DrDetailsType } from "../../Models/DoctorDetails";
+import { DoctorType } from "../../Models/Doctor";
+
+
+interface DoctorPopulated {
+    _id: mongoose.Types.ObjectId;
+    name: string;
+    email: string;
+    phone: string;
+    drDetails?: DrDetailsType|null  
+}
+
+interface TokenWithDoctor {
+    _id: mongoose.Types.ObjectId;
+    date: string;
+    status: string;
+    tokenNumber: number;
+    doctorId: DoctorPopulated;
+}
 
 export const getUsers = async (
   req: Request,

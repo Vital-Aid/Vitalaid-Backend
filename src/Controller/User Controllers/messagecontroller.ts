@@ -81,7 +81,10 @@ export const getmessagedusers = async (
     res: Response,
     next: NextFunction
 ) => {
+    
+    
     const { doctorId } = req.params;
+    console.log(doctorId);
 
     const messages = await Chat.find({
         receiverId: doctorId,
