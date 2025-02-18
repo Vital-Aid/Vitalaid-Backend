@@ -14,9 +14,11 @@ const razorpay = new Razorpay({
   
       // Create Razorpay order
       const options = {
+
         amount: amount * 100,  
         currency: "INR",
         receipt: `receipt#${Math.random() * 1000}`,  
+
         notes: {
           note1: "Donation for VitalAid",
         },

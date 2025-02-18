@@ -2,6 +2,8 @@ import Doctor from "../../Models/Doctor";
 import { Response, Request, NextFunction } from "express";
 import CustomError from "../../utils/CustomError";
 import DrDetails from "../../Models/DoctorDetails";
+import TokenPerDay from "../../Models/totalToken";
+import Token from "../../Models/token";
 
 interface FileWithLocation extends Express.Multer.File {
     fieldname: string;
@@ -41,7 +43,7 @@ export const viewalldoctors = async (req: Request, res: Response, next: NextFunc
         status: 200,
         message: "Doctors Data",
         data: doctors,
-        totalPages: Math.ceil(totalDoctors / limit), 
+        totalPages: Math.ceil(totalDoctors / limit),
         currentPage: page,
         totalDoctors
     });
@@ -62,7 +64,7 @@ export const viewDRbyId = async (req: Request, res: Response, next: NextFunction
 export const addDetails = async (req: Request, res: Response, next: NextFunction) => {
 
 
-    const { doctor, qualification, specialization, availability, description, address,profileImage ,certificates} = req.body
+    const { doctor, qualification, specialization, availability, description, address, profileImage, certificates } = req.body
 
 
     const newDetails = new DrDetails({
@@ -104,21 +106,21 @@ export const getdrDetails = async (req: Request, res: Response, next: NextFuncti
 }
  
 export const getallDetails = async (req: Request, res: Response, next: NextFunction) => {
-   
-        const Details = await DrDetails.find().populate({
-            path: "doctor",
-            select: "name email phone"
-        });
 
-        if (!Details || Details.length === 0) {
-            return next(new CustomError("No doctor details found", 404));
-        }
+    const Details = await DrDetails.find().populate({
+        path: "doctor",
+        select: "name email phone"
+    });
 
-        res.status(200).json({
-            Message: "Doctor details",
-            data: Details
-        });
-  
+    if (!Details || Details.length === 0) {
+        return next(new CustomError("No doctor details found", 404));
+    }
+
+    res.status(200).json({
+        Message: "Doctor details",
+        data: Details
+    });
+
 };
 
 
@@ -181,6 +183,24 @@ export const deleteDr = async (req: Request, res: Response, next: NextFunction) 
         message: "Doctor marked as deleted successfully",
         data: doctor,
     });
+
+}
+
+export const addtokenPerDay = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.user?.id
+    const { tokenperday } = req.body
+    const addtokennumber = new TokenPerDay({ doctorId: id, tokenPerDay: tokenperday})
+    await addtokennumber.save()
+    res.status(200).json({ status: true, message: "number of token add successfully", data: addtokennumber })
+}
+
+export const gettokenNumber = async (req: Request, res: Response, next: NextFunction) => {
+    const {id}= req.params
+
+    const totaltokens = await TokenPerDay.findOne({ doctorId: id })
+   
+    
+    res.status(200).json({ status: true, message: 'total token', data: totaltokens })
 
 }
 
