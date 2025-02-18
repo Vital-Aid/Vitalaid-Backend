@@ -13,6 +13,7 @@ import volunteerRoute from './Routes/volonteersRoutes';
 import errorHandler from './Middleware/ErrorHandler';
 import donnersRoutes from './Routes/donorsRoutes';
 import adminRoute from './Routes/adminRoutes';
+import donationRoutes from'./Routes/donetionRoutes'
 import { app, server } from "./socket/socket";
 dotenv.config();
 
@@ -52,7 +53,7 @@ app.use("/api/users",userRoutes)
 app.use("/api/volunteers",volunteerRoute)
 app.use("/api/donors",donnersRoutes)
 app.use("/api/admin",adminRoute)
-
+app.use("/api/donation",donationRoutes)
 app.use(errorHandler)
 
 app.all('*', (req: Request, res: Response, next: NextFunction) => {

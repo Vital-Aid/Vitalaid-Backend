@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import User from "../../Models/UserModel";
 import CustomError from "../../utils/CustomError";
 import UserDetails from "../../Models/Userdetails";
+import MedHistory from "../../Models/Medicalhistory";
 
 export const getUsers = async (
     req: Request,
@@ -19,9 +20,7 @@ export const getUsers = async (
         blocked: false,
     });
 
-    const users = await User.find({ isDeleted: false, blocked: false })
-        .skip((page - 1) * limit)
-        .limit(limit);
+    const users = await User.find({ isDeleted: false, }).skip((page - 1) * limit).limit(limit);
 
     if (!users) {
         return next(new CustomError("users not found", 404));
@@ -47,15 +46,14 @@ export const getblockedUsers = async (
     res.status(200).json({ users: users });
 };
 
-export const getUserById = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
-    const { _id } = req.params;
-    const user = await User.findById(_id);
-    if (!user) {
-        return next(new CustomError("user not found", 404));
+export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
+
+    const {id}= req.params
+    
+    const medhistory = await MedHistory.find({User:id}).populate('User',"name email phone  occupation address gender bloodgroup age ")
+    if (!medhistory) {
+        return next(new CustomError("user not found", 404))
+
     }
     res.status(200).json({ user: user });
 };
