@@ -15,11 +15,16 @@ interface UserType extends Document {
   isDeleted: boolean;
   createdAt: Date;
   blocked:boolean
+    User: mongoose.ObjectId,
 }
 
 const userSchema: Schema<UserType> = new Schema(
   {
     name: { type: String },
+    User: {
+            type: mongoose.Types.ObjectId, ref: "UserDetails",
+            required: true
+        },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     profileImage: {

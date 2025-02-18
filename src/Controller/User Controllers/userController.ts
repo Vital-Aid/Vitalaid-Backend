@@ -38,20 +38,53 @@ export const getblockedUsers = async (req: Request, res: Response, next: NextFun
 }
 
 
+// export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
+
+//     const {id}= req.params
+    
+//     const medhistory = await MedHistory.find({User:id}).populate('User',"name email phone")
+//     console.log(medhistory,'all deatails of user');
+    
+//     if (!medhistory) {
+//         return next(new CustomError("user not found", 404))
+
+//     }
+//     await Promise.all(
+//         medhistory.map(async(med)=>{
+//             if(medhistory.User){
+
+//             }
+//         })
+//     )
+    
+
+//     res.status(200).json({status:true,mesage:"medical history",data:medhistory })
+// }
+
 export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const medHistory = await MedHistory.find({ User: id })
+        .populate("User", "name email phone").lean();
 
-    const {id}= req.params
-    
-    const medhistory = await MedHistory.find({User:id}).populate('User',"name email phone  occupation address gender bloodgroup age ")
-    if (!medhistory) {
-        return next(new CustomError("user not found", 404))
-
+    if (!medHistory || medHistory.length === 0) {
+        return next(new CustomError("User not found", 404));
     }
-    
-    console.log(medhistory ,'medhistory');
-    
-    res.status(200).json({status:true,mesage:"medical history",data:medhistory })
-}
+
+    const userDetails = await UserDetails.findOne({ user: id }).lean();
+
+    if (!userDetails) {
+        return next(new CustomError("User details not found", 404));
+    }
+
+    const result = { medHistory, userDetails };
+    console.log('results:kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk', JSON.stringify(result, null, 2));
+
+    res.status(200).json({
+        status: true,
+        message: "User medical history and details",
+        data: result,
+    });
+};
 
 export const blockUser = async (req: Request, res: Response, next: NextFunction) => {
 
