@@ -51,7 +51,6 @@ const userAuth = (req: Request, res: Response, next: NextFunction): void => {
         } catch (error) {
             const refreshToken = req.cookies?.refreshToken
 
-
             if (!refreshToken) {
                 return next(new CustomError('Refreshment token and access token are not available.', 404))
             }

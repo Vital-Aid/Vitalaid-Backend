@@ -1,6 +1,6 @@
 import express from 'express'
 import tryCatch from '../utils/tryCatch'
-import { addDetails, blockUser, getblockedUsers, getDetails, getUserById, getUsers } from '../Controller/User Controllers/userController'
+import { addDetails, blockUser, editDetails, getblockedUsers, getDetails, getUserById, getUsers } from '../Controller/User Controllers/userController'
 import { userAuth } from '../Middleware/authMiddleware'
 import { getRequestbyuser, makeRequest, removeRequest, updaterequest } from '../Controller/User Controllers/userEquipmentController'
 import { getAllEquipments, getEquipmentBYId } from '../Controller/Admin controllers/equipmentControllers'
@@ -32,6 +32,7 @@ userRoutes
     .post("/sendmsg",tryCatch(postchat))
     .get("/messageof/:userId/:receiverId",tryCatch(getmsgs))
     .get("/msgof/:doctorId",tryCatch(getmessagedusers))
+    .put("editdetails/:id", tryCatch(editDetails))
 
     
 export default userRoutes;

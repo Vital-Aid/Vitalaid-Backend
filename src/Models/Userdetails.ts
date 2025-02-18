@@ -7,6 +7,10 @@ interface detailType extends Document {
     address: string
     gender:Enumerator
     bloodgroup:Enumerator
+    profileImage?: {
+        originalProfile?: string;
+        thumbnail?: string;
+    };
 }
 
 const userDetailsschema: Schema<detailType> = new Schema({
@@ -25,6 +29,10 @@ const userDetailsschema: Schema<detailType> = new Schema({
         type: String,
         enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
     },
+    profileImage: {
+        originalProfile: { type: String},
+        thumbnail: { type: String },
+    }
 })
 
 const UserDetails = mongoose.model<detailType>("UserDetails", userDetailsschema)
