@@ -9,7 +9,7 @@ import Doctor from "../../Models/Doctor";
 import path from "path";
 import DrDetails, { DrDetailsType } from "../../Models/DoctorDetails";
 import { DoctorType } from "../../Models/Doctor";
-
+import MedHistory from "../../Models/Medicalhistory";
 
 interface DoctorPopulated {
     _id: mongoose.Types.ObjectId;
@@ -171,7 +171,7 @@ export const getallTokenByUser = async (req: Request, res: Response, next: NextF
 
     console.log("User ID:", id, "Date:", date);
 
-    // Step 1: Fetch tokens and populate doctor details
+ 
     const tokens = await Token.find({ patientId: id, date: date })
         .populate<{ doctorId: DoctorPopulated }>("doctorId", "name email phone")
         .lean() as TokenWithDoctor[];
@@ -180,7 +180,7 @@ export const getallTokenByUser = async (req: Request, res: Response, next: NextF
         return next(new CustomError("Tokens not available."));
     }
 
-    // Step 2: Fetch `DrDetails` for each doctor and append manually
+    
     await Promise.all(
         tokens.map(async (token) => {
             if (token.doctorId?._id) {

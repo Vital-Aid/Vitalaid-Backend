@@ -5,6 +5,7 @@ import DrDetails from "../../Models/DoctorDetails";
 import Slot from "../../Models/Slotes";
 import Token from "../../Models/token";
 import dayjs from "dayjs";
+import TokenPerDay from "../../Models/totalToken";
 
 export const getDoctors = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -124,5 +125,11 @@ export const searchDoctors = async (req: Request, res: Response) => {
     res.status(200).json({ doctors, specialties });
   };
 
+  export const addTokenPerDay=async(req: Request, res: Response)=>{
+    const id=req.user?.id
+    const {numberoftoken}=req.body
+    const newtokennumber=await TokenPerDay.findByIdAndUpdate(id,{tokenPerDay:numberoftoken},{new:true})
+    res.status(200).json({status:true,message:"token number updated",data:newtokennumber})
+  }
 
 
