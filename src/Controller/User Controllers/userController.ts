@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import User from "../../Models/UserModel";
 import CustomError from "../../utils/CustomError";
-import UserDetails from "../../Models/Userdetails";
 import Token from "../../Models/token";
 import mongoose from "mongoose";
 import { Server } from "socket.io";
@@ -9,6 +8,7 @@ import Doctor from "../../Models/Doctor";
 import path from "path";
 import DrDetails, { DrDetailsType } from "../../Models/DoctorDetails";
 import { DoctorType } from "../../Models/Doctor";
+import UserDetails from "../../Models/Userdetails";
 
 interface DoctorPopulated {
   _id: mongoose.Types.ObjectId;
@@ -160,15 +160,9 @@ type editDatas = {
   };
 };
 
-export const editDetails = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  const { age, occupation, address, gender, bloodgroup, profileImage } =
-    req.body;
-  const userId = req.user?.id;
-
+export const editDetails = async (req: Request,res: Response,next: NextFunction): Promise<void> => {
+  const {id ,age, occupation, address, gender, bloodgroup, profileImage } =req.body;
+   
   const updateData: editDatas = {
     age,
     occupation,
@@ -180,13 +174,8 @@ export const editDetails = async (
       originalProfile: profileImage,
     },
   };
-
-  const updatedDetails = await UserDetails.findByIdAndUpdate(
-    userId,
-    { $set: updateData },
-    { new: true }
-  );
-
+  const updatedDetails = await UserDetails.findByIdAndUpdate(id, updateData, { new: true });
+  
   if (!updatedDetails) {
     return next(new CustomError("User details not found", 404));
   }
@@ -263,7 +252,6 @@ export const getallTokenByUser = async (
 
   console.log("User ID:", id, "Date:", date);
 
-  // Step 1: Fetch tokens and populate doctor details
   const tokens = (await Token.find({ patientId: id, date: date })
     .populate<{ doctorId: DoctorPopulated }>("doctorId", "name email phone")
     .lean()) as TokenWithDoctor[];
@@ -304,7 +292,7 @@ export const getTokenByUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  const id = req.user?.id;
+  const id = req.params.id;
 
   const tokens = (await Token.find({ patientId: id })
     .populate<{ doctorId: DoctorPopulated }>("doctorId", "name email phone")
