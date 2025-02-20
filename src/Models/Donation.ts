@@ -9,6 +9,8 @@ interface DonationType extends Document {
   status: string;
   user: mongoose.ObjectId;
   type: string;
+  paymentMethod?: string;
+
 }
 
 const DonationSchema: Schema<DonationType> = new Schema({
@@ -36,6 +38,8 @@ const DonationSchema: Schema<DonationType> = new Schema({
     type: Date,
     default: Date.now,
   },
+  paymentMethod: { type: String },
+
 });
 
 const Donation = mongoose.model<DonationType>("Donation", DonationSchema);
