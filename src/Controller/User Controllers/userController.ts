@@ -10,13 +10,16 @@ import path from "path";
 import DrDetails, { DrDetailsType } from "../../Models/DoctorDetails";
 import { DoctorType } from "../../Models/Doctor";
 import MedHistory from "../../Models/Medicalhistory";
+import sendEmail from "../../utils/emailService";
+import Review from "../../Models/Review";
+import { log } from "console";
 
 interface DoctorPopulated {
     _id: mongoose.Types.ObjectId;
     name: string;
     email: string;
     phone: string;
-    drDetails?: DrDetailsType|null  
+    drDetails?: DrDetailsType | null
 }
 
 interface TokenWithDoctor {
@@ -63,17 +66,17 @@ export const getblockedUsers = async (req: Request, res: Response, next: NextFun
 
 export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
 
-    const {id}= req.params
-    
-    const medhistory = await MedHistory.find({User:id}).populate('User',"name email phone  occupation address gender bloodgroup age ")
+    const { id } = req.params
+
+    const medhistory = await MedHistory.find({ User: id }).populate('User', "name email phone  occupation address gender bloodgroup age ")
     if (!medhistory) {
         return next(new CustomError("user not found", 404))
 
     }
-    
-    console.log(medhistory ,'medhistory');
-    
-    res.status(200).json({status:true,mesage:"medical history",data:medhistory })
+
+    console.log(medhistory, 'medhistory');
+
+    res.status(200).json({ status: true, mesage: "medical history", data: medhistory })
 }
 
 export const blockUser = async (req: Request, res: Response, next: NextFunction) => {
@@ -128,11 +131,14 @@ export const getDetails = async (req: Request, res: Response, next: NextFunction
 export const createToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { date, doctorId, tokenNumber } = req.body;
     const patientId = req.user?.id;
-
+    if (!req.user || !req.user.id || !req.user.email) {
+        return next(new CustomError("Unauthorized: User ID or Email is missing", 401));
+    }
+    const email = req.user?.email
     if (!patientId) {
         return next(new CustomError("Patient ID is required"));
     }
-    
+
     const patientObjectId = new mongoose.Types.ObjectId(patientId);
     const doctorObjectId = new mongoose.Types.ObjectId(doctorId);
 
@@ -143,25 +149,60 @@ export const createToken = async (req: Request, res: Response, next: NextFunctio
         doctorId: doctorObjectId,
         tokenNumber: tokenNumber,
     });
- 
+
     if (oldToken) {
         return next(new CustomError("This token is already booked"));
     }
-
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
     // Create new token
     const newToken = new Token({
         date,
         doctorId: doctorObjectId,
         tokenNumber,
+        otp,
         patientId: patientObjectId
     });
-
     await newToken.save()
-    const io: Server = req.app.get("io")
+
+    const emailSubject = "Your OTP for Appointment Confirmation";
+    const emailBody = `<p>Your OTP for confirming your appointment is: <strong>${otp}</strong></p>`;
+    try {
+        await sendEmail(email, emailSubject, emailBody)
+        const io: Server = req.app.get("io")
     io.emit("tokenUpdated", newToken);
     res.status(200).json({ status: true, message: 'Token created successfully', data: newToken });
-};
 
+    } catch (error) {
+        return next(new CustomError("Failed to send OTP email"));
+    }
+
+
+    };
+
+    export const otpVerification = async (req: Request, res: Response, next: NextFunction) => {
+        const { otp } = req.body;
+        console.log("otp:", otp);
+        const io: Server = req.app.get("io")
+        console.log("Socket instance in controller:", io)
+        const token = await Token.findOne({ otp });
+    
+        if (!token) {
+            return next(new CustomError("Invalid OTP"));
+        }
+    
+        token.isVerified = true;
+        token.otp = null; 
+        await token.save();
+        io.emit("otpVerified", { userId: req.user?.id, status: "verified" });
+
+
+        res.status(200).json({
+            status: true,
+            message: "OTP verification successful",
+            data: token,
+        });
+    }
+    
 
 export const getallTokenByUser = async (req: Request, res: Response, next: NextFunction) => {
     console.log("Fetching tokens for user...");
@@ -171,8 +212,8 @@ export const getallTokenByUser = async (req: Request, res: Response, next: NextF
 
     console.log("User ID:", id, "Date:", date);
 
- 
-    const tokens = await Token.find({ patientId: id, date: date })
+
+    const tokens = await Token.find({ patientId: id, date: date,isVerified:true })
         .populate<{ doctorId: DoctorPopulated }>("doctorId", "name email phone")
         .lean() as TokenWithDoctor[];
 
@@ -180,7 +221,7 @@ export const getallTokenByUser = async (req: Request, res: Response, next: NextF
         return next(new CustomError("Tokens not available."));
     }
 
-    
+
     await Promise.all(
         tokens.map(async (token) => {
             if (token.doctorId?._id) {
@@ -191,7 +232,7 @@ export const getallTokenByUser = async (req: Request, res: Response, next: NextF
                 token.doctorId.drDetails = drDetails || null;
             }
         })
-    );
+    ); 
 
     console.log("Tokens fetched with DrDetails:", JSON.stringify(tokens, null, 2));
 
@@ -201,3 +242,31 @@ export const getallTokenByUser = async (req: Request, res: Response, next: NextF
         data: tokens,
     });
 };
+
+
+export const addReview=async(req: Request, res: Response, next: NextFunction)=>{
+    const id=req.user?.id
+    const{doctorId,rating,comment}=req.body
+    const newReview=new Review({userId:id,doctorId,rating,comment})
+    await newReview.save()
+    res.status(200).json({status:true,message:"review added successfully",data:newReview})
+}
+
+export const getReview=async(req: Request, res: Response, next: NextFunction)=>{
+    const {id}=req.params
+    if(!id){
+        return next(new CustomError("Doctor id is not provided"))
+    }
+    const reviews=await Review.find({doctorId:id,isDeleted:false}).populate("userId","name")
+    if(!reviews){
+        return next(new CustomError("Reciews not found"))
+
+    }
+    res.status(200).json({status:true,message:"doctor reviews",data:reviews})
+}
+
+export const deleteReview=async(req: Request, res: Response, next: NextFunction)=>{
+    const{id}=req.params
+    const deletedreciew=await Review.findByIdAndUpdate(id,{isDeleted:true},{new:true})
+    res.status(200).json({status:true,message:"review deleted successfully",data:deleteReview})
+}

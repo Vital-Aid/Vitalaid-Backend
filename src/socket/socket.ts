@@ -8,8 +8,8 @@ export const server = http.createServer(app);
 export const io = new Server(server, {
     cors: {
         origin: process.env.FRONTEND_URI, 
-        methods: ["GET", "POST"],
-        
+        methods: ["GET", "POST","PUT"],
+        credentials:true
     },
 });
 
@@ -33,6 +33,11 @@ io.on("connection", (socket) => {
     socket.on("bookToken",(data)=>{
       console.log(" New token booked:", data);
       io.emit("tokenUpdated", data)
+    })
+    socket.on("otpVerification",(otp)=>{
+      console.log("otp verified",otp);
+      io.emit("otpVerified")
+      
     })
 
     socket.on("disconnect", () => {

@@ -71,7 +71,7 @@ export const getDoctersByIdfordoctor = async (req: Request, res: Response, next:
 
 export const getallTokens = async (req: Request, res: Response, next: NextFunction) => {
     const {id}=req.params
-    const tokens = await Token.find({doctorId:id}).populate("patientId","name email phone")
+    const tokens = await Token.find({doctorId:id,isVerified:true}).populate("patientId","name email phone")
 
     if (!tokens) {
         return next(new CustomError('tokens not available'))
@@ -84,7 +84,7 @@ export const getallTokensofEachDoctor = async (req: Request, res: Response, next
     const id=req.user?.id
     const{date}=req.query 
    
-    const tokens = await Token.find({doctorId:id,date:date}).populate("patientId","name email phone profileImage")
+    const tokens = await Token.find({doctorId:id,date:date,isVerified:true}).populate("patientId","name email phone profileImage")
     if (!tokens) {
         return next(new CustomError('tokens not available'))
     }  
