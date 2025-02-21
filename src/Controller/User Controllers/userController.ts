@@ -145,7 +145,7 @@ export const getDetails = async (
   if (!userDetails) {
     return next(new CustomError("No Details found for this user", 404));
   }
-  res.status(200).json( userDetails );
+  res.status(200).json(userDetails);
 };
 
 type editDatas = {
@@ -160,9 +160,14 @@ type editDatas = {
   };
 };
 
-export const editDetails = async (req: Request,res: Response,next: NextFunction): Promise<void> => {
-  const {id ,age, occupation, address, gender, bloodgroup, profileImage } =req.body;
-   
+export const editDetails = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { id, age, occupation, address, gender, bloodgroup, profileImage } =
+    req.body;
+
   const updateData: editDatas = {
     age,
     occupation,
@@ -174,8 +179,10 @@ export const editDetails = async (req: Request,res: Response,next: NextFunction)
       originalProfile: profileImage,
     },
   };
-  const updatedDetails = await UserDetails.findByIdAndUpdate(id, updateData, { new: true });
-  
+  const updatedDetails = await UserDetails.findByIdAndUpdate(id, updateData, {
+    new: true,
+  });
+
   if (!updatedDetails) {
     return next(new CustomError("User details not found", 404));
   }
@@ -231,13 +238,11 @@ export const createToken = async (
   await newToken.save();
   const io: Server = req.app.get("io");
   io.emit("tokenUpdated", newToken);
-  res
-    .status(200)
-    .json({
-      status: true,
-      message: "Token created successfully",
-      data: newToken,
-    });
+  res.status(200).json({
+    status: true,
+    message: "Token created successfully",
+    data: newToken,
+  });
 };
 
 export const getallTokenByUser = async (
@@ -306,5 +311,25 @@ export const getTokenByUser = async (
     status: true,
     message: "User's tokens fetched successfully.",
     data: tokens,
+  });
+};
+
+export const getUsersUpdatedToday = async (req: Request, res: Response):Promise <void> => {
+  const now = new Date();
+  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const endOfDay = new Date(startOfDay);
+  endOfDay.setDate(startOfDay.getDate() + 1);
+
+  const count = await User.countDocuments({
+    updatedAt: {
+      $gte: startOfDay,
+      $lt: endOfDay,
+    },
+  });
+
+   res.status(200).json({
+    success: true,
+    count,
+    date: startOfDay.toISOString().split("T")[0],
   });
 };
