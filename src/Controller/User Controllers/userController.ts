@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import User from "../../Models/UserModel";
 import CustomError from "../../utils/CustomError";
-import UserDetails from "../../Models/Userdetails";
 import Token from "../../Models/token";
 import mongoose from "mongoose";
 import { Server } from "socket.io";
@@ -13,6 +12,7 @@ import MedHistory from "../../Models/Medicalhistory";
 import sendEmail from "../../utils/emailService";
 import Review from "../../Models/Review";
 import { log } from "console";
+import UserDetails from "../../Models/Userdetails";
 
 interface DoctorPopulated {
   _id: mongoose.Types.ObjectId;
@@ -352,6 +352,26 @@ console.log("tokens",tokens);
     status: true,
     message: "User's tokens fetched successfully.",
     data: tokens,
+  });
+};
+
+export const getUsersUpdatedToday = async (req: Request, res: Response):Promise <void> => {
+  const now = new Date();
+  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const endOfDay = new Date(startOfDay);
+  endOfDay.setDate(startOfDay.getDate() + 1);
+
+  const count = await User.countDocuments({
+    updatedAt: {
+      $gte: startOfDay,
+      $lt: endOfDay,
+    },
+  });
+
+   res.status(200).json({
+    success: true,
+    count,
+    date: startOfDay.toISOString().split("T")[0],
   });
 };
 
