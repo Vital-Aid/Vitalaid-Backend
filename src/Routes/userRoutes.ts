@@ -1,6 +1,6 @@
 import express from 'express'
 import tryCatch from '../utils/tryCatch'
-import { addDetails, addReview, blockUser, createToken, deleteReview, createToken, editDetails, getallTokenByUser, getblockedUsers, getDetails, getReview, getTokenByUser, getUserById, getUsers, otpVerification } from '../Controller/User Controllers/userController'
+import { addDetails, addReview, blockUser, deleteReview, createToken, editDetails, getallTokenByUser, getblockedUsers, getDetails, getReview, getTokenByUser, getUserById, getUsers, otpVerification } from '../Controller/User Controllers/userController'
 import { adminAuth, userAuth } from '../Middleware/authMiddleware'
 import { getRequestbyuser, makeRequest, removeRequest, updaterequest } from '../Controller/User Controllers/userEquipmentController'
 import { getAllEquipments, getEquipmentBYId } from '../Controller/Admin controllers/equipmentControllers'
