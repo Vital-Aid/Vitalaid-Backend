@@ -4,7 +4,7 @@ import CustomError from "../../utils/CustomError";
 import UserDetails from "../../Models/Userdetails";
 import Token from "../../Models/token";
 import mongoose from "mongoose";
-import { Server } from 'socket.io'
+import { Server } from "socket.io";
 import Doctor from "../../Models/Doctor";
 import path from "path";
 import DrDetails, { DrDetailsType } from "../../Models/DoctorDetails";
@@ -23,46 +23,56 @@ interface DoctorPopulated {
 }
 
 interface TokenWithDoctor {
-    _id: mongoose.Types.ObjectId;
-    date: string;
-    status: string;
-    tokenNumber: number;
-    doctorId: DoctorPopulated;
+  _id: mongoose.Types.ObjectId;
+  date: string;
+  status: string;
+  tokenNumber: number;
+  doctorId: DoctorPopulated;
 }
 
-export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
+export const getUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const page = Number(req.query.page);
+  const limit = Number(req.query.limit);
 
-    const page = Number(req.query.page)
-    const limit = Number(req.query.limit)
+  if (isNaN(page) || isNaN(limit) || page < 1 || limit < 1) {
+    return next(new CustomError("Invalid pagination parameters", 400));
+  }
+  const totalusers = await User.countDocuments({
+    isDeleted: false,
+    blocked: false,
+  });
 
-    if (isNaN(page) || isNaN(limit) || page < 1 || limit < 1) {
-        return next(new CustomError("Invalid pagination parameters", 400));
-    }
-    const totalusers = await User.countDocuments({ isDeleted: false, })
+  const users = await User.find({ isDeleted: false })
+    .skip((page - 1) * limit)
+    .limit(limit);
 
-    const users = await User.find({ isDeleted: false, }).skip((page - 1) * limit).limit(limit);
+  if (!users) {
+    return next(new CustomError("users not found", 404));
+  }
 
-    if (!users) {
-        return next(new CustomError('users not found', 404))
-    }
+  res.status(200).json({
+    users: users,
+    totalPages: Math.ceil(totalusers / limit),
+    currentPage: page,
+  });
+};
 
-    res.status(200).json({
-        users: users,
-        totalPages: Math.ceil(totalusers / limit),
-        currentPage: page,
-    })
-}
+export const getblockedUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const users = await User.find({ isDeleted: false, blocked: true });
+  if (!users) {
+    return next(new CustomError("users not found", 404));
+  }
 
-export const getblockedUsers = async (req: Request, res: Response, next: NextFunction) => {
-
-    const users = await User.find({ isDeleted: false, blocked: true })
-    if (!users) {
-        return next(new CustomError('users not found', 404))
-    }
-
-    res.status(200).json({ users: users })
-}
-
+  res.status(200).json({ users: users });
+};
 
 export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -79,54 +89,127 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
     res.status(200).json({ status: true, mesage: "medical history", data: medhistory })
 }
 
-export const blockUser = async (req: Request, res: Response, next: NextFunction) => {
+export const blockUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { _id } = req.params;
 
-    const { _id } = req.params;
+  const blockedUser = await User.findById(_id);
+  if (!blockedUser) {
+    return next(new CustomError("blockeUser not found"));
+  }
+  blockedUser.blocked = !blockedUser.blocked;
 
-    const blockedUser = await User.findById(_id)
-    if (!blockedUser) {
-        return next(new CustomError("blockeUser not found"))
-    }
-    blockedUser.blocked = !blockedUser.blocked;
+  await blockedUser.save();
 
-    await blockedUser.save();
+  res.status(200).json({
+    message: blockedUser.blocked
+      ? "User has been blocked"
+      : "User has been unblocked",
+    user: blockedUser,
+  });
+};
 
-    res.status(200).json({
-        message: blockedUser.blocked ? "User has been blocked" : "User has been unblocked",
-        user: blockedUser,
-    });
-}
+export const addDetails = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { age, occupation, address, gender, bloodgroup, profileImage } =
+    req.body;
+  const user = req.params.id;
 
-export const addDetails = async (req: Request, res: Response, next: NextFunction) => {
-    const { age, occupation, address, gender, bloodgroup } = req.body
-    const user = req.params.id
+  const Details = new UserDetails({
+    user,
+    address,
+    age,
+    occupation,
+    gender,
+    bloodgroup,
+    profileImage: {
+      thumbnail: "",
+      originalProfile: profileImage,
+    },
+  });
 
-    const Details = new UserDetails({
-        user,
-        address,
-        age,
-        occupation,
-        gender,
-        bloodgroup
-    })
+  const saveddetails = await Details.save();
+  res.status(201).json({
+    error: false,
+    message: "Details added",
+    data: saveddetails,
+  });
+};
 
-    const saveddetails = await Details.save()
-    res.status(201).json({
-        error: false,
-        message: "Details added",
-        data: saveddetails
-    })
+export const getDetails = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const userDetails = await UserDetails.find({ user: req.params.id });
+  if (!userDetails) {
+    return next(new CustomError("No Details found for this user", 404));
+  }
+  res.status(200).json( userDetails );
+};
 
-}
+type editDatas = {
+  age: string;
+  gender: string;
+  bloodgroup: string;
+  occupation: string;
+  address: string;
+  profileImage: {
+    originalProfile?: string;
+    thumbnail?: string;
+  };
+};
 
+export const editDetails = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { age, occupation, address, gender, bloodgroup, profileImage } =
+    req.body;
+  const userId = req.user?.id;
 
-export const getDetails = async (req: Request, res: Response, next: NextFunction) => {
-    const userDetails = await UserDetails.find({ user: req.params.id })
-    if (!userDetails) {
-        return next(new CustomError("No Details found for this user", 404))
-    }
-    res.status(200).json(userDetails)
-}
+  const updateData: editDatas = {
+    age,
+    occupation,
+    address,
+    gender,
+    bloodgroup,
+    profileImage: {
+      thumbnail: "",
+      originalProfile: profileImage,
+    },
+  };
+
+  const updatedDetails = await UserDetails.findByIdAndUpdate(
+    userId,
+    { $set: updateData },
+    { new: true }
+  );
+
+  if (!updatedDetails) {
+    return next(new CustomError("User details not found", 404));
+  }
+
+  res.status(200).json({
+    error: false,
+    message: "Details updated successfully",
+    data: updatedDetails,
+  });
+};
+
+export const searchDoctors = async (req: Request, res: Response) => {
+  const doctors = await Doctor.find();
+  const specialties = await DrDetails.find();
+
+  res.status(200).json({ doctors, specialties });
+};
 
 export const createToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { date, doctorId, tokenNumber } = req.body;
@@ -204,22 +287,26 @@ export const createToken = async (req: Request, res: Response, next: NextFunctio
     }
     
 
-export const getallTokenByUser = async (req: Request, res: Response, next: NextFunction) => {
-    console.log("Fetching tokens for user...");
+export const getallTokenByUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  console.log("Fetching tokens for user...");
 
-    const id = req.user?.id;
-    const { date } = req.query;
+  const id = req.user?.id;
+  const { date } = req.query;
 
-    console.log("User ID:", id, "Date:", date);
+  console.log("User ID:", id, "Date:", date);
 
 
     const tokens = await Token.find({ patientId: id, date: date,isVerified:true })
         .populate<{ doctorId: DoctorPopulated }>("doctorId", "name email phone")
         .lean() as TokenWithDoctor[];
 
-    if (!tokens || tokens.length === 0) {
-        return next(new CustomError("Tokens not available."));
-    }
+  if (!tokens || tokens.length === 0) {
+    return next(new CustomError("Tokens not available."));
+  }
 
 
     await Promise.all(
@@ -234,13 +321,38 @@ export const getallTokenByUser = async (req: Request, res: Response, next: NextF
         })
     ); 
 
-    console.log("Tokens fetched with DrDetails:", JSON.stringify(tokens, null, 2));
+  console.log(
+    "Tokens fetched with DrDetails:",
+    JSON.stringify(tokens, null, 2)
+  );
 
-    res.status(200).json({
-        status: true,
-        message: "User's tokens fetched successfully.",
-        data: tokens,
-    });
+  res.status(200).json({
+    status: true,
+    message: "User's tokens fetched successfully.",
+    data: tokens,
+  });
+};
+
+export const getTokenByUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const id = req.user?.id;
+
+  const tokens = (await Token.find({ patientId: id })
+    .populate<{ doctorId: DoctorPopulated }>("doctorId", "name email phone")
+    .lean()) as TokenWithDoctor[];
+
+  if (!tokens || tokens.length === 0) {
+    return next(new CustomError("Tokens not available."));
+  }
+
+  res.status(200).json({
+    status: true,
+    message: "User's tokens fetched successfully.",
+    data: tokens,
+  });
 };
 
 

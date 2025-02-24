@@ -125,10 +125,6 @@ export const userlogin = async (req: Request, res: Response, next: NextFunction)
          name: user.name,
          email: user.email,
          role: 'User',
-         profileImage: {
-            originalProfile: user.profileImage?.originalProfile,
-            thumbnail: user.profileImage?.thumbnail
-         },
          phone: user.phone
       },
    });
@@ -267,10 +263,6 @@ export const adminlogin = async (req: Request, res: Response, next: NextFunction
          name: user.name,
          email: user.email,
          role: 'Admin',
-         profileImage: {
-            originalProfile: user.profileImage?.originalProfile,
-            thumbnail: user.profileImage?.thumbnail
-         },
          phone: user.phone
       },
    });
@@ -280,5 +272,6 @@ export const logout = async (req: Request, res: Response, next: NextFunction) =>
    res.clearCookie('user')
    res.clearCookie('refreshToken')
    res.clearCookie('accessToken')
+   
    res.json({ message: 'Logged out successfully' });
 }
