@@ -145,7 +145,7 @@ export const getDetails = async (
   if (!userDetails) {
     return next(new CustomError("No Details found for this user", 404));
   }
-  res.status(200).json(userDetails);
+  res.status(200).json( userDetails );
 };
 
 type editDatas = {
@@ -165,8 +165,9 @@ export const editDetails = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const { id, age, occupation, address, gender, bloodgroup, profileImage } =
+  const { age, occupation, address, gender, bloodgroup, profileImage } =
     req.body;
+  const userId = req.user?.id;
 
   const updateData: editDatas = {
     age,
@@ -179,9 +180,12 @@ export const editDetails = async (
       originalProfile: profileImage,
     },
   };
-  const updatedDetails = await UserDetails.findByIdAndUpdate(id, updateData, {
-    new: true,
-  });
+
+  const updatedDetails = await UserDetails.findByIdAndUpdate(
+    userId,
+    { $set: updateData },
+    { new: true }
+  );
 
   if (!updatedDetails) {
     return next(new CustomError("User details not found", 404));
