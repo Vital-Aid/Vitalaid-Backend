@@ -165,10 +165,10 @@ export const editDetails = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const { age, occupation, address, gender, bloodgroup, profileImage } =
+  const {id, age, occupation, address, gender, bloodgroup, profileImage } =
     req.body;
-  const userId = req.user?.id;
-
+  const userId = id;
+  
   const updateData: editDatas = {
     age,
     occupation,
