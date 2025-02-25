@@ -1,6 +1,9 @@
 import Razorpay from "razorpay";
 import { NextFunction, Request, Response } from "express";
 import Donation from "../../Models/Donation";
+import axios from "axios";
+import CustomError from "../../utils/CustomError";
+
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID as string,
@@ -109,3 +112,48 @@ export const allDonations = async (req: Request, res: Response) => {
     },
   });
 };
+
+export const getAllDonations = async (req: Request, res: Response,next:NextFunction) => {
+  
+  const donations = await Donation.find()
+    .populate("user", "name email phone")
+    .sort({ createdAt: -1 });
+    if(!donations){
+      return next(new CustomError("deatils not found",404))
+    }
+
+  res.status(200).json({
+    success: true,
+    data: donations,
+  });
+
+
+};
+
+export const getUserReceipt = async (req: Request, res: Response,next:NextFunction) => {
+  const { userId } = req.params;
+  const donation = await Donation.findOne({ user: userId }) .populate("user", "name email phone").sort({ date: -1 });
+
+  if(!donation){
+    return next(new CustomError("deatils not found",404))
+  }
+
+  res.status(200).json({
+    success: true,
+    data :donation,
+  });
+
+};
+
+export const getAllDonationsById =async(req: Request, res: Response,next:NextFunction)=>{
+const { userId } = req.params;
+const donation = await Donation.find({ user: userId }) .populate("user", "name email phone").sort({ date: -1 });
+if(!donation){
+  return next(new CustomError("deatils not found",404))
+}
+res.status(200).json({
+  success: true,
+  data :donation,
+});
+
+}

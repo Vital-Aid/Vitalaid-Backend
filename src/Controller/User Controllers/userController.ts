@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import User from "../../Models/UserModel";
 import CustomError from "../../utils/CustomError";
+import MedHistory from "../../Models/Medicalhistory";
 import Token from "../../Models/token";
 import mongoose from "mongoose";
 import { Server } from "socket.io";
@@ -73,21 +74,29 @@ export const getblockedUsers = async (
 
   res.status(200).json({ users: users });
 };
-
 export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
+  const { id } = req.params;
+  const medHistory = await MedHistory.find({ User: id })
+      .populate("User", "name email phone").lean();
 
-  const { id } = req.params
-
-  const medhistory = await MedHistory.find({ User: id }).populate('User', "name email phone  occupation address gender bloodgroup age ")
-  if (!medhistory) {
-    return next(new CustomError("user not found", 404))
- 
+  if (!medHistory || medHistory.length === 0) {
+      return next(new CustomError("User not found", 404));
   }
 
-  console.log(medhistory, 'medhistory');
+  const userDetails = await UserDetails.findOne({ user: id }).lean();
 
-  res.status(200).json({ status: true, mesage: "medical history", data: medhistory })
-}
+  if (!userDetails) {
+      return next(new CustomError("User details not found", 404));
+  }
+
+  const result = { medHistory, userDetails };
+
+  res.status(200).json({
+      status: true,
+      message: "User medical history and details",
+      data: result,
+  });
+};
 
 export const blockUser = async (
   req: Request,
