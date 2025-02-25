@@ -81,7 +81,7 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
   const medhistory = await MedHistory.find({ User: id }).populate('User', "name email phone  occupation address gender bloodgroup age ")
   if (!medhistory) {
     return next(new CustomError("user not found", 404))
-
+ 
   }
 
   console.log(medhistory, 'medhistory');
