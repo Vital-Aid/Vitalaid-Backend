@@ -9,7 +9,6 @@ import Doctor from "../../Models/Doctor";
 import path from "path";
 import DrDetails, { DrDetailsType } from "../../Models/DoctorDetails";
 import { DoctorType } from "../../Models/Doctor";
-import MedHistory from "../../Models/Medicalhistory";
 import sendEmail from "../../utils/emailService";
 import Review from "../../Models/Review";
 import { log } from "console";
@@ -74,27 +73,34 @@ export const getblockedUsers = async (
 
   res.status(200).json({ users: users });
 };
+
+
 export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
-  const medHistory = await MedHistory.find({ User: id })
-      .populate("User", "name email phone").lean();
+  console.log('id:', id);
 
-  if (!medHistory || medHistory.length === 0) {
-      return next(new CustomError("User not found", 404));
-  }
+  const medHistory = await MedHistory.find({ User: id })
+    .populate("User", "name email phone")
+    .lean();
 
   const userDetails = await UserDetails.findOne({ user: id }).lean();
 
+  const user = await User.findOne({ _id: id }).lean(); // Add .lean() to return a plain JS object
+
+  if (!user) {
+    return next(new CustomError("User not found", 404));
+  }
   if (!userDetails) {
-      return next(new CustomError("User details not found", 404));
+    return next(new CustomError("User details not found", 404));
   }
 
-  const result = { medHistory, userDetails };
+ 
+  const result = { medHistory, userDetails, user };
 
   res.status(200).json({
-      status: true,
-      message: "User medical history and details",
-      data: result,
+    status: true,
+    message: "User medical history and details",
+    data: result,
   });
 };
 
@@ -394,7 +400,7 @@ export const addReview = async (req: Request, res: Response, next: NextFunction)
 }
 
 export const getReview = async (req: Request, res: Response, next: NextFunction) => {
-  const { id } = req.params;
+  const id = req.user?.id
 
   if (!id) {
     return next(new CustomError("Doctor id is not provided"));

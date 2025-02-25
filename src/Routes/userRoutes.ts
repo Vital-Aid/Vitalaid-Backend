@@ -11,6 +11,7 @@ import { gettokenNumber } from '../Controller/Admin controllers/doctorControll'
 import { editTokenStatus, getallTokens } from '../Controller/User Controllers/doctorController'
 import { getmsgusr, msgtodr, newMessages } from '../Controller/Admin controllers/adminController'
 import { getmessagedusers, getmsgs, postchat } from '../Controller/User Controllers/messagecontroller'
+import {  getUsersReviewforusers } from '../Controller/User Controllers/ReviewController'
 
 const userRoutes = express.Router()
 
@@ -48,6 +49,7 @@ userRoutes
     .put("/deletereview/:id",userAuth,tryCatch(deleteReview))    
     .get("/getalltokenofuser/:id", userAuth, tryCatch(getTokenByUser))
     .get("/getloginedCount", tryCatch(getUsersUpdatedToday))
+    .get("/getuserreview",userAuth,tryCatch(getUsersReviewforusers))
 
 
 export default userRoutes;
