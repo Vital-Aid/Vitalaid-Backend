@@ -82,7 +82,6 @@ export const generateReport = async (
     const normalText = reportText.replace(/\*\*/g, "");
     const healthStatusMatch = reportText.match(/Health Status:\s*(?:Categorize as:)?\s*\n?-?\s*\*\*(.*?)\*\*/i);
 
-    console.log("jjjjjj",healthStatusMatch);
     
     const healthStatus = healthStatusMatch ? healthStatusMatch[1] : "Unknown";
 

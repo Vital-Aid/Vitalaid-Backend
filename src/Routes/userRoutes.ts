@@ -1,6 +1,6 @@
 import express from 'express'
 import tryCatch from '../utils/tryCatch'
-import { addDetails, blockUser, createToken, editDetails, getallTokenByUser, getblockedUsers, getDetails, getTokenByUser, getUserById, getUsers } from '../Controller/User Controllers/userController'
+import { addDetails, blockUser, createToken, editDetails, getallTokenByUser, getblockedUsers, getDetails, getTokenByUser, getUserById, getUsers, getUsersUpdatedToday } from '../Controller/User Controllers/userController'
 import { adminAuth, userAuth } from '../Middleware/authMiddleware'
 import { getRequestbyuser, makeRequest, removeRequest, updaterequest } from '../Controller/User Controllers/userEquipmentController'
 import { getAllEquipments, getEquipmentBYId } from '../Controller/Admin controllers/equipmentControllers'
@@ -36,15 +36,14 @@ userRoutes
     .post("/sendmsg", tryCatch(postchat))
     .get("/messageof/:userId/:receiverId", tryCatch(getmsgs))
     .get("/msgof/:doctorId", tryCatch(getmessagedusers))
-    .put("editdetailsofthe", tryCatch(editDetails))
+    .put("/editdetailsofthe",userAuth, tryCatch(editDetails))
     .post('/createtoken', userAuth, validateData(tokenValidationSchema), tryCatch(createToken))
     .get("/gettokenperday/:id", userAuth, tryCatch(gettokenNumber))
     .get("/getalltokens/:id",userAuth,tryCatch(getallTokens))
     .get("/getalltoken", userAuth, tryCatch(getallTokenByUser))
     .put("/canceltoken/:id", userAuth, tryCatch(editTokenStatus))
-    .get("/getalltokenofuser", userAuth, tryCatch(getTokenByUser))
-
-
+    .get("/getalltokenofuser/:id", userAuth, tryCatch(getTokenByUser))
+    .get("/getloginedCount", tryCatch(getUsersUpdatedToday))
 
 
 export default userRoutes;

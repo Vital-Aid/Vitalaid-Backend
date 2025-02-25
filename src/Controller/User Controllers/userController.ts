@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import User from "../../Models/UserModel";
 import CustomError from "../../utils/CustomError";
-import UserDetails from "../../Models/Userdetails";
 import MedHistory from "../../Models/Medicalhistory";
 import Token from "../../Models/token";
 import mongoose from "mongoose";
@@ -10,6 +9,7 @@ import Doctor from "../../Models/Doctor";
 import path from "path";
 import DrDetails, { DrDetailsType } from "../../Models/DoctorDetails";
 import { DoctorType } from "../../Models/Doctor";
+import UserDetails from "../../Models/Userdetails";
 
 interface DoctorPopulated {
   _id: mongoose.Types.ObjectId;
@@ -253,13 +253,11 @@ export const createToken = async (
   await newToken.save();
   const io: Server = req.app.get("io");
   io.emit("tokenUpdated", newToken);
-  res
-    .status(200)
-    .json({
-      status: true,
-      message: "Token created successfully",
-      data: newToken,
-    });
+  res.status(200).json({
+    status: true,
+    message: "Token created successfully",
+    data: newToken,
+  });
 };
 
 export const getallTokenByUser = async (
@@ -274,7 +272,6 @@ export const getallTokenByUser = async (
 
   console.log("User ID:", id, "Date:", date);
 
-  // Step 1: Fetch tokens and populate doctor details
   const tokens = (await Token.find({ patientId: id, date: date })
     .populate<{ doctorId: DoctorPopulated }>("doctorId", "name email phone")
     .lean()) as TokenWithDoctor[];
@@ -315,7 +312,7 @@ export const getTokenByUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  const id = req.user?.id;
+  const id = req.params.id;
 
   const tokens = (await Token.find({ patientId: id })
     .populate<{ doctorId: DoctorPopulated }>("doctorId", "name email phone")
@@ -329,5 +326,25 @@ export const getTokenByUser = async (
     status: true,
     message: "User's tokens fetched successfully.",
     data: tokens,
+  });
+};
+
+export const getUsersUpdatedToday = async (req: Request, res: Response):Promise <void> => {
+  const now = new Date();
+  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const endOfDay = new Date(startOfDay);
+  endOfDay.setDate(startOfDay.getDate() + 1);
+
+  const count = await User.countDocuments({
+    updatedAt: {
+      $gte: startOfDay,
+      $lt: endOfDay,
+    },
+  });
+
+   res.status(200).json({
+    success: true,
+    count,
+    date: startOfDay.toISOString().split("T")[0],
   });
 };

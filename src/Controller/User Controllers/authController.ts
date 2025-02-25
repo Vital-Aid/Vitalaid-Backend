@@ -92,6 +92,8 @@ export const userlogin = async (req: Request, res: Response, next: NextFunction)
       process.env.JWT_SECRET as string,
       { expiresIn: "7d" }
    );
+    
+   await User.findByIdAndUpdate(user._id, { updatedAt: Date.now() }, { new: true });
 
    res.cookie('accessToken', token, {
       httpOnly: true,
