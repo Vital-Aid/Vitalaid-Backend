@@ -151,3 +151,16 @@ return;
     });
   
 };
+
+export const getAllDonationsById =async(req: Request, res: Response,next:NextFunction)=>{
+  const { userId } = req.params;
+  const donation = await Donation.find({ user: userId }) .populate("user", "name email phone").sort({ date: -1 });
+  if(!donation){
+    return next(new CustomError("deatils not found",404))
+  }
+  res.status(200).json({
+    success: true,
+    data :donation,
+  });
+
+}
