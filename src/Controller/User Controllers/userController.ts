@@ -83,7 +83,7 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
 
   const userDetails = await UserDetails.findOne({ user: id }).lean();
 
-  const user = await User.findOne({ _id: id }).lean(); // Add .lean() to return a plain JS object
+  const user = await User.findOne({ _id: id }).lean();
 
   if (!user) {
     return next(new CustomError("User not found", 404));
@@ -414,7 +414,7 @@ export const getReview = async (req: Request, res: Response, next: NextFunction)
 
   const userIds = reviews.map(review => review.userId._id.toString());
   const userDetails = await UserDetails.find({ user: { $in: userIds } }, "user profileImage").lean();
-console.log('fvdv',userDetails);
+
 
   const userProfileMap = new Map(
     userDetails.map(user => [user.user.toString(), user?.profileImage?.originalProfile])
