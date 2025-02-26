@@ -3,9 +3,9 @@ import tryCatch from "../utils/tryCatch";
 import { editAvailability, editTokenStatus, getDoctersById, getDoctersByIdfordoctor, getDoctors, getallTokens, getallTokensofEachDoctor, searchDoctors } from "../Controller/User Controllers/doctorController";
 import { adminAuth, doctorAuth, userAuth } from "../Middleware/authMiddleware";
 import { upload } from "../Middleware/ImageUpload";
-import { addDetails, addtokenPerDay, deleteDr, editDetails, getallDetails, getdrDetails, gettokenNumber } from "../Controller/Admin controllers/doctorControll";
-
-
+import { addDetails, addtokenPerDay, deleteDr, editDetails, edittokenPerDay, getallDetails, getdrDetails, gettokenNumber } from "../Controller/Admin controllers/doctorControll";
+import { getReview, getUserById } from "../Controller/User Controllers/userController";
+import { adduserReview, getUsersReview } from "../Controller/User Controllers/ReviewController";
 
 
 const routes = express.Router()
@@ -31,4 +31,10 @@ routes
     .put('/updatetoken/:id', doctorAuth,tryCatch(editTokenStatus))
     .put('/updateavailability',doctorAuth,tryCatch(editAvailability))
     .get('/searchDoctors',tryCatch(searchDoctors))
+    .post('/adddatetokennumber',doctorAuth,tryCatch(addtokenPerDay))
+    .put('/updatetokennumber',doctorAuth,tryCatch(edittokenPerDay))
+    .get("/getallreview",doctorAuth,tryCatch(getReview))
+    .get('/getUserById/:id',doctorAuth, tryCatch(getUserById))
+    .post("/adduserreview",doctorAuth,tryCatch(adduserReview))
+    .get("/getuserreview/:id",doctorAuth,tryCatch(getUsersReview))
 export default routes
