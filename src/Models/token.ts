@@ -9,6 +9,8 @@ interface tokentype extends Document{
     date:string
     status:statusType
     tokenNumber:number
+    otp:string|null
+    isVerified:boolean
 }
 
 const tokenSchema:Schema<tokentype>=new Schema({
@@ -22,7 +24,9 @@ const tokenSchema:Schema<tokentype>=new Schema({
             default:"pending"
            
         },
-        tokenNumber:{type:Number,required:true}
+        tokenNumber:{type:Number,required:true},
+        otp:{type:String,required:false,default:null},
+        isVerified:{type:Boolean,required:true,default:false}
 
         
         

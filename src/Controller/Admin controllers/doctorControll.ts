@@ -203,4 +203,17 @@ export const gettokenNumber = async (req: Request, res: Response, next: NextFunc
     res.status(200).json({ status: true, message: 'total token', data: totaltokens })
 
 }
+export const edittokenPerDay = async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.user?.id
+    if(!id){
+        return next(new CustomError("user not found",404))
+    }
+    const { tokenperday } = req.body
+    
+    const addtokennumber =await TokenPerDay.findOneAndUpdate({ doctorId: id}, {tokenPerDay: tokenperday},{new:true})
+    if (!addtokennumber) {
+        return next(new CustomError("Doctor not found",404))
+    }
+    res.status(200).json({ status: true, message: "number of token updated successfully", data: addtokennumber })
+}
 
