@@ -6,12 +6,10 @@ import Token from "../../Models/token";
 import mongoose from "mongoose";
 import { Server } from "socket.io";
 import Doctor from "../../Models/Doctor";
-import path from "path";
 import DrDetails, { DrDetailsType } from "../../Models/DoctorDetails";
 import { DoctorType } from "../../Models/Doctor";
 import sendEmail from "../../utils/emailService";
 import Review from "../../Models/Review";
-import { log } from "console";
 import UserDetails from "../../Models/Userdetails";
 
 interface DoctorPopulated {
@@ -186,10 +184,10 @@ export const editDetails = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const { age, occupation, address, gender, bloodgroup, profileImage } =
+  const {id, age, occupation, address, gender, bloodgroup, profileImage } =
     req.body;
-  const userId = req.user?.id;
-
+  const userId = id;
+  
   const updateData: editDatas = {
     age,
     occupation,
@@ -361,7 +359,7 @@ export const getTokenByUser = async (
   if (!tokens || tokens.length === 0) {
     return next(new CustomError("Tokens not available."));
   }
-console.log("tokens",tokens);
+
 
   res.status(200).json({
     status: true,
@@ -400,7 +398,7 @@ export const addReview = async (req: Request, res: Response, next: NextFunction)
 }
 
 export const getReview = async (req: Request, res: Response, next: NextFunction) => {
-  const id = req.user?.id
+  const {id} = req.params
 
   if (!id) {
     return next(new CustomError("Doctor id is not provided"));

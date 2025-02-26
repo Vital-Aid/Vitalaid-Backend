@@ -4,7 +4,6 @@ import Donation from "../../Models/Donation";
 import axios from "axios";
 import CustomError from "../../utils/CustomError";
 
-
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID as string,
   key_secret: process.env.RAZORPAY_KEY_SECRET as string,
@@ -99,7 +98,6 @@ export const allDonations = async (req: Request, res: Response) => {
   const totalEquipment =
     equipmentTotal.length > 0 ? equipmentTotal[0].totalAmount : 0;
 
-
   const totalDonation = totalGeneral + totalEquipment;
 
   res.status(200).json({
@@ -108,52 +106,63 @@ export const allDonations = async (req: Request, res: Response) => {
     totalDonations: {
       general: totalGeneral,
       equipment: totalEquipment,
-      total: totalDonation  
+      total: totalDonation,
     },
   });
 };
 
-export const getAllDonations = async (req: Request, res: Response,next:NextFunction) => {
-  
+export const getAllDonations = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const donations = await Donation.find()
     .populate("user", "name email phone")
     .sort({ createdAt: -1 });
-    if(!donations){
-      return next(new CustomError("deatils not found",404))
-    }
+  if (!donations) {
+    return next(new CustomError("deatils not found", 404));
+  }
 
   res.status(200).json({
     success: true,
     data: donations,
   });
-
-
 };
 
-export const getUserReceipt = async (req: Request, res: Response,next:NextFunction) => {
+export const getUserReceipt = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { userId } = req.params;
-  const donation = await Donation.findOne({ user: userId }) .populate("user", "name email phone").sort({ date: -1 });
+  const donation = await Donation.findOne({ user: userId })
+    .populate("user", "name email phone")
+    .sort({ date: -1 });
 
-  if(!donation){
-    return next(new CustomError("deatils not found",404))
+  if (!donation) {
+    return next(new CustomError("deatils not found", 404));
   }
 
   res.status(200).json({
     success: true,
-    data :donation,
+    data: donation,
   });
-
 };
 
-export const getAllDonationsById =async(req: Request, res: Response,next:NextFunction)=>{
-const { userId } = req.params;
-const donation = await Donation.find({ user: userId }) .populate("user", "name email phone").sort({ date: -1 });
-if(!donation){
-  return next(new CustomError("deatils not found",404))
-}
-res.status(200).json({
-  success: true,
-  data :donation,
-});
-
-}
+export const getAllDonationsById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { userId } = req.params;
+  const donation = await Donation.find({ user: userId })
+    .populate("user", "name email phone")
+    .sort({ date: -1 });
+  if (!donation) {
+    return next(new CustomError("deatils not found", 404));
+  }
+  res.status(200).json({
+    success: true,
+    data: donation,
+  });
+};
