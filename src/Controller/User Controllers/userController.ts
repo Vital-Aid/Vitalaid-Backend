@@ -359,7 +359,7 @@ export const getTokenByUser = async (
   if (!tokens || tokens.length === 0) {
     return next(new CustomError("Tokens not available."));
   }
-console.log("tokens",tokens);
+
 
   res.status(200).json({
     status: true,
@@ -398,7 +398,7 @@ export const addReview = async (req: Request, res: Response, next: NextFunction)
 }
 
 export const getReview = async (req: Request, res: Response, next: NextFunction) => {
-  const id = req.user?.id
+  const {id} = req.params
 
   if (!id) {
     return next(new CustomError("Doctor id is not provided"));
