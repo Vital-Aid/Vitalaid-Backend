@@ -4,8 +4,8 @@ import { editAvailability, editTokenStatus, getDoctersById, getDoctersByIdfordoc
 import { adminAuth, doctorAuth, userAuth } from "../Middleware/authMiddleware";
 import { upload } from "../Middleware/ImageUpload";
 import { addDetails, addtokenPerDay, deleteDr, editDetails, edittokenPerDay, getallDetails, getdrDetails, gettokenNumber } from "../Controller/Admin controllers/doctorControll";
-import { getReview, getUserById } from "../Controller/User Controllers/userController";
-import { adduserReview, getUsersReview } from "../Controller/User Controllers/ReviewController";
+import {  getUserById } from "../Controller/User Controllers/userController";
+import { adduserReview, getReview, getUsersReview } from "../Controller/User Controllers/ReviewController";
 
 
 const routes = express.Router()
@@ -14,13 +14,11 @@ routes
 
     .get('/getdoctors', adminAuth, tryCatch(getDoctors))
     .get('/getAllDoctors', userAuth, tryCatch(getallDetails))
-
     .get('/getDoctorsById/:id', adminAuth, tryCatch(getDoctersById))
     .get('/getDoctorById/:id', tryCatch(getDoctersById))
-
     .post("/postdetailsof", adminAuth,  tryCatch(addDetails))
     .get("/getDetailsof/:id", adminAuth, tryCatch(getdrDetails))
-    .get("/getdetail/:id", tryCatch(getdrDetails))//
+    .get("/getdetail/:id", tryCatch(getdrDetails))
     .put("/editdetailsof/:id", adminAuth, upload.fields([{ name: "profileImage", maxCount: 1 }, { name: "certificates", maxCount: 5 }]), tryCatch(editDetails))
     .put("/deletedr/:id", adminAuth, tryCatch(deleteDr))
     .get("/getdoctorsprofile", doctorAuth, tryCatch(getDoctersByIdfordoctor))
@@ -37,4 +35,6 @@ routes
     .get('/getUserById/:id',doctorAuth, tryCatch(getUserById))
     .post("/adduserreview",doctorAuth,tryCatch(adduserReview))
     .get("/getuserreview/:id",doctorAuth,tryCatch(getUsersReview))
+
+
 export default routes

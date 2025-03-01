@@ -2,9 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import Doctor from "../../Models/Doctor";
 import CustomError from "../../utils/CustomError";
 import DrDetails from "../../Models/DoctorDetails";
-import Slot from "../../Models/Slotes";
 import Token from "../../Models/token";
-import dayjs from "dayjs";
 import TokenPerDay from "../../Models/totalToken";
 
 export const getDoctors = async (req: Request, res: Response, next: NextFunction) => {
