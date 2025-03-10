@@ -414,7 +414,6 @@ export const getReview = async (req: Request, res: Response, next: NextFunction)
 
   const userIds = reviews.map(review => review.userId._id.toString());
   const userDetails = await UserDetails.find({ user: { $in: userIds } }, "user profileImage").lean();
-console.log('fvdv',userDetails);
 
   const userProfileMap = new Map(
     userDetails.map(user => [user.user.toString(), user?.profileImage?.originalProfile])
