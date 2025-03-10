@@ -13,32 +13,28 @@ exports.io = new socket_io_1.Server(exports.server, {
     cors: {
         origin: process.env.FRONTEND_URI,
         methods: ["GET", "POST", "PUT"],
-        credentials: true
+        credentials: true,
     },
 });
 exports.io.on("connection", (socket) => {
-    console.log("A user connected:", socket.id);
     socket.on("joinRoom", ({ userId, role }) => {
         socket.join(userId);
         console.log(`${role} joined room: ${userId}`);
     });
     socket.on("sendMessage", ({ senderId, receiverId, message }) => {
-        console.log(`Socket event: Message from ${senderId} to ${receiverId}: ${message}`);
         exports.io.to(receiverId).emit("receiveMessage", {
             senderId,
             message,
         });
     });
     socket.on("bookToken", (data) => {
-        console.log(" New token booked:", data);
         exports.io.emit("tokenUpdated", data);
     });
     socket.on("otpVerification", (otp) => {
-        console.log("otp verified", otp);
         exports.io.emit("otpVerified");
     });
     socket.on("disconnect", () => {
-        console.log("A user disconnected:", socket.id);
+        console.log("User has left");
     });
 });
 exports.app.set("io", exports.io);

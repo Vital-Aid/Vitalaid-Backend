@@ -12,12 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addTokenPerDay = exports.searchDoctors = exports.editAvailability = exports.editTokenStatus = exports.getallTokensofEachDoctor = exports.getallTokens = exports.getDoctersByIdfordoctor = exports.getDoctersById = exports.getDoctors = void 0;
+exports.getReviewForDoctors = exports.addTokenPerDay = exports.searchDoctors = exports.editAvailability = exports.editTokenStatus = exports.getallTokensofEachDoctor = exports.getallTokens = exports.getDoctersByIdfordoctor = exports.getDoctersById = exports.getDoctors = void 0;
 const Doctor_1 = __importDefault(require("../../Models/Doctor"));
 const CustomError_1 = __importDefault(require("../../utils/CustomError"));
 const DoctorDetails_1 = __importDefault(require("../../Models/DoctorDetails"));
 const token_1 = __importDefault(require("../../Models/token"));
 const totalToken_1 = __importDefault(require("../../Models/totalToken"));
+const Review_1 = __importDefault(require("../../Models/Review"));
+const Userdetails_1 = __importDefault(require("../../Models/Userdetails"));
 const getDoctors = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const page = Number(req.query.page);
     const limit = Number(req.query.limit);
@@ -131,3 +133,26 @@ const addTokenPerDay = (req, res) => __awaiter(void 0, void 0, void 0, function*
     res.status(200).json({ status: true, message: "token number updated", data: newtokennumber });
 });
 exports.addTokenPerDay = addTokenPerDay;
+const getReviewForDoctors = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const id = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+    if (!id) {
+        return next(new CustomError_1.default("Doctor id is not provided"));
+    }
+    const reviews = yield Review_1.default.find({ doctorId: id, isDeleted: false })
+        .populate("userId", "name")
+        .lean();
+    if (!reviews.length) {
+        return next(new CustomError_1.default("Reviews not found"));
+    }
+    const userIds = reviews.map(review => review.userId._id.toString());
+    const userDetails = yield Userdetails_1.default.find({ user: { $in: userIds } }, "user profileImage").lean();
+    const userProfileMap = new Map(userDetails.map(user => { var _a; return [user.user.toString(), (_a = user === null || user === void 0 ? void 0 : user.profileImage) === null || _a === void 0 ? void 0 : _a.originalProfile]; }));
+    const updatedReviews = reviews.map(review => (Object.assign(Object.assign({}, review), { userId: Object.assign(Object.assign({}, review.userId), { profileImage: userProfileMap.get(review.userId._id.toString()) || null }) })));
+    res.status(200).json({
+        status: true,
+        message: "Doctor reviews",
+        data: updatedReviews
+    });
+});
+exports.getReviewForDoctors = getReviewForDoctors;

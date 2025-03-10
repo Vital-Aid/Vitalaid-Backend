@@ -17,6 +17,7 @@ const doctorController_1 = require("../Controller/User Controllers/doctorControl
 const adminController_1 = require("../Controller/Admin controllers/adminController");
 const messagecontroller_1 = require("../Controller/User Controllers/messagecontroller");
 const ReviewController_1 = require("../Controller/User Controllers/ReviewController");
+const tokenController_1 = require("../Controller/User Controllers/tokenController");
 const userRoutes = express_1.default.Router();
 userRoutes
     .get('/getUsers', (0, tryCatch_1.default)(userController_1.getUsers))
@@ -40,16 +41,16 @@ userRoutes
     .get("/messageof/:userId/:receiverId", (0, tryCatch_1.default)(messagecontroller_1.getmsgs))
     .get("/msgof/:doctorId", (0, tryCatch_1.default)(messagecontroller_1.getmessagedusers))
     .put("/editdetailsofthe", authMiddleware_1.userAuth, (0, tryCatch_1.default)(userController_1.editDetails))
-    .post('/createtoken', authMiddleware_1.userAuth, (0, zodValidation_1.validateData)(tokenValidation_1.tokenValidationSchema), (0, tryCatch_1.default)(userController_1.createToken))
-    .put("/otpverification", authMiddleware_1.userAuth, (0, tryCatch_1.default)(userController_1.otpVerification))
+    .post('/createtoken', authMiddleware_1.userAuth, (0, zodValidation_1.validateData)(tokenValidation_1.tokenValidationSchema), (0, tryCatch_1.default)(tokenController_1.createToken))
+    .put("/otpverification", authMiddleware_1.userAuth, (0, tryCatch_1.default)(tokenController_1.otpVerification))
     .get("/gettokenperday/:id", authMiddleware_1.userAuth, (0, tryCatch_1.default)(doctorControll_1.gettokenNumber))
     .get("/getalltokens/:id", authMiddleware_1.userAuth, (0, tryCatch_1.default)(doctorController_1.getallTokens))
-    .get("/getalltoken", authMiddleware_1.userAuth, (0, tryCatch_1.default)(userController_1.getallTokenByUser))
+    .get("/getalltoken", authMiddleware_1.userAuth, (0, tryCatch_1.default)(tokenController_1.getallTokenByUser))
     .put("/canceltoken/:id", authMiddleware_1.userAuth, (0, tryCatch_1.default)(doctorController_1.editTokenStatus))
-    .post("/addreview", authMiddleware_1.userAuth, (0, tryCatch_1.default)(userController_1.addReview))
-    .get("/getallreview/:id", authMiddleware_1.userAuth, (0, tryCatch_1.default)(userController_1.getReview))
-    .put("/deletereview/:id", authMiddleware_1.userAuth, (0, tryCatch_1.default)(userController_1.deleteReview))
-    .get("/getalltokenofuser/:id", authMiddleware_1.userAuth, (0, tryCatch_1.default)(userController_1.getTokenByUser))
+    .post("/addreview", authMiddleware_1.userAuth, (0, tryCatch_1.default)(ReviewController_1.addReview))
+    .get("/getallreview/:id", authMiddleware_1.userAuth, (0, tryCatch_1.default)(ReviewController_1.getReview))
+    .put("/deletereview/:id", authMiddleware_1.userAuth, (0, tryCatch_1.default)(ReviewController_1.deleteReview))
+    .get("/getalltokenofuser/:id", authMiddleware_1.userAuth, (0, tryCatch_1.default)(tokenController_1.getTokenByUser))
     .get("/getloginedCount", (0, tryCatch_1.default)(userController_1.getUsersUpdatedToday))
     .get("/getuserreview", authMiddleware_1.userAuth, (0, tryCatch_1.default)(ReviewController_1.getUsersReviewforusers));
 exports.default = userRoutes;

@@ -48,6 +48,7 @@ const docterRegistration = (req, res, next) => __awaiter(void 0, void 0, void 0,
         phone,
     });
     yield newDoctor.save();
+    console.log(newDoctor);
     res.status(200).json({
         error: false,
         status: true,

@@ -68,7 +68,6 @@ const getmessagedusers = (req, res, next) => __awaiter(void 0, void 0, void 0, f
     })
         .select("senderId")
         .distinct("senderId");
-    // Get user details
     const users = yield UserModel_1.default.find({ _id: { $in: messages } }).select("name email");
     res.status(200).json({ success: true, data: users });
 });

@@ -43,7 +43,7 @@ const userSchema = new mongoose_1.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     admin: { type: Boolean, default: false, },
-    phone: { type: String, required: true, },
+    phone: { type: String },
     isDeleted: { type: Boolean, default: false },
     blocked: { type: Boolean, default: false },
 }, { timestamps: true });

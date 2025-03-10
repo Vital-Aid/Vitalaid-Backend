@@ -19,7 +19,7 @@ routes
     .get('/getDoctorById/:id', (0, tryCatch_1.default)(doctorController_1.getDoctersById))
     .post("/postdetailsof", authMiddleware_1.adminAuth, (0, tryCatch_1.default)(doctorControll_1.addDetails))
     .get("/getDetailsof/:id", authMiddleware_1.adminAuth, (0, tryCatch_1.default)(doctorControll_1.getdrDetails))
-    .get("/getdetail/:id", (0, tryCatch_1.default)(doctorControll_1.getdrDetails)) //
+    .get("/getdetail/:id", (0, tryCatch_1.default)(doctorControll_1.getdrDetails))
     .put("/editdetailsof/:id", authMiddleware_1.adminAuth, ImageUpload_1.upload.fields([{ name: "profileImage", maxCount: 1 }, { name: "certificates", maxCount: 5 }]), (0, tryCatch_1.default)(doctorControll_1.editDetails))
     .put("/deletedr/:id", authMiddleware_1.adminAuth, (0, tryCatch_1.default)(doctorControll_1.deleteDr))
     .get("/getdoctorsprofile", authMiddleware_1.doctorAuth, (0, tryCatch_1.default)(doctorController_1.getDoctersByIdfordoctor))
@@ -32,7 +32,7 @@ routes
     .get('/searchDoctors', (0, tryCatch_1.default)(doctorController_1.searchDoctors))
     .post('/adddatetokennumber', authMiddleware_1.doctorAuth, (0, tryCatch_1.default)(doctorControll_1.addtokenPerDay))
     .put('/updatetokennumber', authMiddleware_1.doctorAuth, (0, tryCatch_1.default)(doctorControll_1.edittokenPerDay))
-    .get("/getallreview", authMiddleware_1.doctorAuth, (0, tryCatch_1.default)(userController_1.getReview))
+    .get("/getallreview", authMiddleware_1.doctorAuth, (0, tryCatch_1.default)(doctorController_1.getReviewForDoctors))
     .get('/getUserById/:id', authMiddleware_1.doctorAuth, (0, tryCatch_1.default)(userController_1.getUserById))
     .post("/adduserreview", authMiddleware_1.doctorAuth, (0, tryCatch_1.default)(ReviewController_1.adduserReview))
     .get("/getuserreview/:id", authMiddleware_1.doctorAuth, (0, tryCatch_1.default)(ReviewController_1.getUsersReview));

@@ -5,7 +5,7 @@ const zod_1 = require("zod");
 exports.userValidationType = zod_1.z.object({
     name: zod_1.z.string().optional(),
     email: zod_1.z.string().email(),
-    password: zod_1.z.string().min(6),
+    password: zod_1.z.string().min(5),
     profileImage: zod_1.z.object({
         originalProfile: zod_1.z.string().optional(),
         thumbnail: zod_1.z.string().optional(),
