@@ -20,8 +20,8 @@ interface FileWithLocation extends Express.Multer.File {
 
 export const viewalldoctors = async (req: Request, res: Response, next: NextFunction) => {
 
-    let { page = 1, limit = 8 } = req.query; 
-    
+    let { page = 1, limit = 8 } = req.query;
+
     page = Number(page);
     limit = Number(limit);
 
@@ -92,9 +92,9 @@ export const getdrDetails = async (req: Request, res: Response, next: NextFuncti
 
 
     const Details = await DrDetails.find({ doctor: req.params.id }).populate("doctor", "name email phone _id")
-  
-    
-    
+
+
+
     if (!Details) {
         return next(new CustomError("there is no details find about this doctor", 404))
     }
@@ -104,7 +104,7 @@ export const getdrDetails = async (req: Request, res: Response, next: NextFuncti
         data: Details
     })
 }
- 
+
 export const getallDetails = async (req: Request, res: Response, next: NextFunction) => {
 
     const Details = await DrDetails.find().populate({
@@ -189,30 +189,30 @@ export const deleteDr = async (req: Request, res: Response, next: NextFunction) 
 export const addtokenPerDay = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.user?.id
     const { tokenperday } = req.body
-    const addtokennumber = new TokenPerDay({ doctorId: id, tokenPerDay: tokenperday})
+    const addtokennumber = new TokenPerDay({ doctorId: id, tokenPerDay: tokenperday })
     await addtokennumber.save()
     res.status(200).json({ status: true, message: "number of token add successfully", data: addtokennumber })
 }
 
 export const gettokenNumber = async (req: Request, res: Response, next: NextFunction) => {
-    const {id}= req.params
+    const { id } = req.params
 
     const totaltokens = await TokenPerDay.findOne({ doctorId: id })
-   
-    
+
+
     res.status(200).json({ status: true, message: 'total token', data: totaltokens })
 
 }
 export const edittokenPerDay = async (req: Request, res: Response, next: NextFunction) => {
     const id = req.user?.id
-    if(!id){
-        return next(new CustomError("user not found",404))
+    if (!id) {
+        return next(new CustomError("user not found", 404))
     }
     const { tokenperday } = req.body
-    
-    const addtokennumber =await TokenPerDay.findOneAndUpdate({ doctorId: id}, {tokenPerDay: tokenperday},{new:true})
+
+    const addtokennumber = await TokenPerDay.findOneAndUpdate({ doctorId: id }, { tokenPerDay: tokenperday }, { new: true })
     if (!addtokennumber) {
-        return next(new CustomError("Doctor not found",404))
+        return next(new CustomError("Doctor not found", 404))
     }
     res.status(200).json({ status: true, message: "number of token updated successfully", data: addtokennumber })
 }

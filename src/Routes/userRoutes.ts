@@ -1,6 +1,6 @@
 import express from 'express'
 import tryCatch from '../utils/tryCatch'
-import { addDetails, addReview, blockUser, deleteReview, createToken, editDetails, getallTokenByUser, getblockedUsers, getDetails, getReview, getTokenByUser, getUserById, getUsers, otpVerification, getUsersUpdatedToday } from '../Controller/User Controllers/userController'
+import { addDetails,  blockUser,  editDetails,  getblockedUsers, getDetails, getUserById, getUsers,  getUsersUpdatedToday } from '../Controller/User Controllers/userController'
 import { adminAuth, userAuth } from '../Middleware/authMiddleware'
 import { getRequestbyuser, makeRequest, removeRequest, updaterequest } from '../Controller/User Controllers/userEquipmentController'
 import { getAllEquipments, getEquipmentBYId } from '../Controller/Admin controllers/equipmentControllers'
@@ -11,7 +11,8 @@ import { gettokenNumber } from '../Controller/Admin controllers/doctorControll'
 import { editTokenStatus, getallTokens } from '../Controller/User Controllers/doctorController'
 import { getmsgusr, msgtodr, newMessages } from '../Controller/Admin controllers/adminController'
 import { getmessagedusers, getmsgs, postchat } from '../Controller/User Controllers/messagecontroller'
-import {  getUsersReviewforusers } from '../Controller/User Controllers/ReviewController'
+import {  addReview, deleteReview, getReview, getUsersReviewforusers } from '../Controller/User Controllers/ReviewController'
+import { createToken, getallTokenByUser, getTokenByUser, otpVerification } from '../Controller/User Controllers/tokenController'
 
 const userRoutes = express.Router()
 

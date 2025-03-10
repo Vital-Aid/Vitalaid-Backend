@@ -6,44 +6,36 @@ export const app: Application = express();
 export const server = http.createServer(app);
 
 export const io = new Server(server, {
-    cors: {
-        origin: process.env.FRONTEND_URI, 
-        methods: ["GET", "POST","PUT"],
-        credentials:true
-    },
+  cors: {
+    origin: process.env.FRONTEND_URI,
+    methods: ["GET", "POST", "PUT"],
+    credentials: true,
+  },
 });
 
 io.on("connection", (socket) => {
-    console.log("A user connected:", socket.id);
-  
-    socket.on("joinRoom", ({ userId, role }) => {
-      socket.join(userId);
-      console.log(`${role} joined room: ${userId}`);
-    });
-  
-    socket.on("sendMessage", ({ senderId, receiverId, message }) => {
-      console.log(`Socket event: Message from ${senderId} to ${receiverId}: ${message}`);
-    
-      io.to(receiverId).emit("receiveMessage", {
-        senderId,
-        message,
-      });
-    });
+  socket.on("joinRoom", ({ userId, role }) => {
+    socket.join(userId);
+    console.log(`${role} joined room: ${userId}`);
+  });
 
-    socket.on("bookToken",(data)=>{
-      console.log(" New token booked:", data);
-      io.emit("tokenUpdated", data)
-    })
-    socket.on("otpVerification",(otp)=>{
-      console.log("otp verified",otp);
-      io.emit("otpVerified")
-      
-    })
-
-    socket.on("disconnect", () => {
-      console.log("A user disconnected:", socket.id);
+  socket.on("sendMessage", ({ senderId, receiverId, message }) => {
+    io.to(receiverId).emit("receiveMessage", {
+      senderId,
+      message,
     });
   });
 
-app.set("io", io);
+  socket.on("bookToken", (data) => {
+    io.emit("tokenUpdated", data);
+  });
+  socket.on("otpVerification", (otp) => {
+    io.emit("otpVerified");
+  });
 
+  socket.on("disconnect", () => {
+    console.log("User has left");
+  });
+});
+
+app.set("io", io);

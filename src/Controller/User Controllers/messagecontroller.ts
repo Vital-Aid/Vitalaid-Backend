@@ -93,7 +93,6 @@ export const getmessagedusers = async (
         .select("senderId")
         .distinct("senderId");
 
-    // Get user details
     const users = await User.find({ _id: { $in: messages } }).select(
         "name email"
     );
