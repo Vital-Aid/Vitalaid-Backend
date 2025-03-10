@@ -1,6 +1,6 @@
 import express from "express";
 import tryCatch from "../utils/tryCatch";
-import { editAvailability, editTokenStatus, getDoctersById, getDoctersByIdfordoctor, getDoctors, getallTokens, getallTokensofEachDoctor, searchDoctors } from "../Controller/User Controllers/doctorController";
+import { editAvailability, editTokenStatus, getDoctersById, getDoctersByIdfordoctor, getDoctors, getReviewForDoctors, getallTokens, getallTokensofEachDoctor, searchDoctors } from "../Controller/User Controllers/doctorController";
 import { adminAuth, doctorAuth, userAuth } from "../Middleware/authMiddleware";
 import { upload } from "../Middleware/ImageUpload";
 import { addDetails, addtokenPerDay, deleteDr, editDetails, edittokenPerDay, getallDetails, getdrDetails, gettokenNumber } from "../Controller/Admin controllers/doctorControll";
@@ -31,7 +31,7 @@ routes
     .get('/searchDoctors',tryCatch(searchDoctors))
     .post('/adddatetokennumber',doctorAuth,tryCatch(addtokenPerDay))
     .put('/updatetokennumber',doctorAuth,tryCatch(edittokenPerDay))
-    .get("/getallreview",doctorAuth,tryCatch(getReview))
+    .get("/getallreview",doctorAuth,tryCatch(getReviewForDoctors))
     .get('/getUserById/:id',doctorAuth, tryCatch(getUserById))
     .post("/adduserreview",doctorAuth,tryCatch(adduserReview))
     .get("/getuserreview/:id",doctorAuth,tryCatch(getUsersReview))

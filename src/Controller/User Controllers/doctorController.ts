@@ -4,6 +4,8 @@ import CustomError from "../../utils/CustomError";
 import DrDetails from "../../Models/DoctorDetails";
 import Token from "../../Models/token";
 import TokenPerDay from "../../Models/totalToken";
+import Review from "../../Models/Review";
+import UserDetails from "../../Models/Userdetails";
 
 export const getDoctors = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -149,3 +151,39 @@ export const searchDoctors = async (req: Request, res: Response) => {
   }
 
 
+  export const getReviewForDoctors = async (req: Request, res: Response, next: NextFunction) => {
+    const id= req.user?.id
+  
+    if (!id) {
+      return next(new CustomError("Doctor id is not provided"));
+    }
+  
+    const reviews = await Review.find({ doctorId: id, isDeleted: false })
+      .populate("userId", "name")
+      .lean();
+  
+    if (!reviews.length) {
+      return next(new CustomError("Reviews not found"));
+    }
+  
+    const userIds = reviews.map(review => review.userId._id.toString());
+    const userDetails = await UserDetails.find({ user: { $in: userIds } }, "user profileImage").lean();
+  
+    const userProfileMap = new Map(
+      userDetails.map(user => [user.user.toString(), user?.profileImage?.originalProfile])
+    );
+  
+    const updatedReviews = reviews.map(review => ({
+      ...review,
+      userId: {
+        ...review.userId,
+        profileImage: userProfileMap.get(review.userId._id.toString()) || null
+      }
+    }));
+  
+    res.status(200).json({
+      status: true,
+      message: "Doctor reviews",
+      data: updatedReviews
+    });
+  }
