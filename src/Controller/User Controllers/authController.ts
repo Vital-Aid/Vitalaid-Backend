@@ -98,25 +98,25 @@ export const userlogin = async (req: Request, res: Response, next: NextFunction)
     
    await User.findByIdAndUpdate(user._id, { updatedAt: Date.now() }, { new: true });
 
-   res.cookie('accessToken', token, {
-      httpOnly: true,
-      secure: true,
-      maxAge: 60 * 1000,
-      sameSite: 'none',
-   });
-   res.cookie('refreshToken', refreshmentToken, {
-      httpOnly: true,
-      secure: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'none',
-   });
+   // res.cookie('accessToken', token, {
+   //    httpOnly: true,
+   //    secure: true,
+   //    maxAge: 60 * 1000,
+   //    sameSite: 'none',
+   // });
+   // res.cookie('refreshToken', refreshmentToken, {
+   //    httpOnly: true,
+   //    secure: true,
+   //    maxAge: 7 * 24 * 60 * 60 * 1000,
+   //    sameSite: 'none',
+   // });
 
-   res.cookie(`user`, "user", {
-      httpOnly: true,
-      secure: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'none',
-   });
+   // res.cookie(`user`, "user", {
+   //    httpOnly: true,
+   //    secure: true,
+   //    maxAge: 7 * 24 * 60 * 60 * 1000,
+   //    sameSite: 'none',
+   // });
 
 
 
@@ -124,7 +124,7 @@ export const userlogin = async (req: Request, res: Response, next: NextFunction)
       error: false,
       message: `user Login successfully`,
       accessToken: token,
-      refreshmentToken: refreshmentToken,
+      refreshToken: refreshmentToken,
       user: {
          id: user._id,
          name: user.name,
@@ -168,37 +168,38 @@ export const doctorlogin = async (req: Request, res: Response, next: NextFunctio
       { expiresIn: "7d" }
    );
 
-   res.cookie('accessToken', token, {
-      httpOnly: true,
-      secure: true,
-      maxAge: 60 * 1000,
-      sameSite: 'none',
-   });
-   res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'none',
-   });
+   // res.cookie('accessToken', token, {
+   //    httpOnly: true,
+   //    secure: true,
+   //    maxAge: 60 * 1000,
+   //    sameSite: 'none',
+   // });
+   // res.cookie('refreshToken', refreshToken, {
+   //    httpOnly: true,
+   //    secure: true,
+   //    maxAge: 7 * 24 * 60 * 60 * 1000,
+   //    sameSite: 'none',
+   // });
 
-   res.cookie(`user`, "Doctor", {
-      httpOnly: true,
-      secure: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'none',
-   });
+   // res.cookie(`user`, "Doctor", {
+   //    httpOnly: true,
+   //    secure: true,
+   //    maxAge: 7 * 24 * 60 * 60 * 1000,
+   //    sameSite: 'none',
+   // });
 
 
 
    res.status(200).json({
       error: false,
       message: `Doctor Login successfully`,
+      accessToken:token,
+      refreshToken:refreshToken,
       user: {
          id: doctor._id,
          name: doctor.name,
          email: doctor.email,
          role: 'Doctor',
-
          phone: doctor.phone
       },
    });
@@ -238,31 +239,33 @@ export const adminlogin = async (req: Request, res: Response, next: NextFunction
       { expiresIn: "7d" }
    );
 
-   res.cookie('accessToken', token, {
-      httpOnly: true,
-      secure: true,
-      maxAge: 60 * 1000,
-      sameSite: 'none',
-   });
-   res.cookie('refreshToken', refreshmentToken, {
-      httpOnly: true,
-      secure: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'none',
-   });
+   // res.cookie('accessToken', token, {
+   //    httpOnly: true,
+   //    secure: true,
+   //    maxAge: 60 * 1000,
+   //    sameSite: 'none',
+   // });
+   // res.cookie('refreshToken', refreshmentToken, {
+   //    httpOnly: true,
+   //    secure: true,
+   //    maxAge: 7 * 24 * 60 * 60 * 1000,
+   //    sameSite: 'none',
+   // });
 
-   res.cookie(`user`, "Admin", {
-      httpOnly: true,
-      secure: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'none',
-   });
+   // res.cookie(`user`, "Admin", {
+   //    httpOnly: true,
+   //    secure: true,
+   //    maxAge: 7 * 24 * 60 * 60 * 1000,
+   //    sameSite: 'none',
+   // });
 
 
 
    res.status(200).json({
       error: false,
       message: `Admin Login successfully`,
+      accessToken:token,
+      refreshToken:refreshmentToken,
       user: {
          id: user._id,
          name: user.name,
