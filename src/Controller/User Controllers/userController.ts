@@ -239,13 +239,7 @@ export const getUsersUpdatedToday = async (req: Request, res: Response):Promise 
 };
 
 
-export const addReview = async (req: Request, res: Response, next: NextFunction) => {
-  const id = req.user?.id
-  const { doctorId, rating, comment } = req.body
-  const newReview = new Review({ userId: id, doctorId, rating, comment })
-  await newReview.save()
-  res.status(200).json({ status: true, message: "review added successfully", data: newReview })
-}
+
 
 export const getReview = async (req: Request, res: Response, next: NextFunction) => {
   const {id} = req.params

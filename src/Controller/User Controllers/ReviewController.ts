@@ -144,6 +144,7 @@ export const addReview = async (req: Request, res: Response, next: NextFunction)
   res.status(200).json({ status: true, message: "review added successfully", data: newReview })
 }
 
+
 export const getReview = async (req: Request, res: Response, next: NextFunction) => {
   const {id} = req.params
 
