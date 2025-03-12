@@ -22,6 +22,7 @@ export const userRegistration = async (
       password: hashedPassword,
       phone,
    });
+   
    await newUser.save();
 
    res.status(200).json({
