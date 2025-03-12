@@ -25,7 +25,7 @@ userRoutes
     .post('/addrequest', userAuth, tryCatch(makeRequest))
     .get('/userrequest', userAuth, tryCatch(getRequestbyuser))
     .delete('/deleterequest/:equipment', userAuth, tryCatch(removeRequest))
-    .get('/getallequipment', userAuth, tryCatch(getAllEquipments))
+    .get('/getallequipment', tryCatch(getAllEquipments))
     .post("/addDetails/:id", userAuth, tryCatch(addDetails))
     .get("/getdetails/:id", tryCatch(getDetails))
     .post("/generatereport", tryCatch(generateReport))
