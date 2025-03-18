@@ -66,6 +66,8 @@ export const docterRegistration = async (
 
 export const userlogin = async (req: Request, res: Response, next: NextFunction) => {
    const { email, password } = req.body
+   console.log(email,password);
+   
    const user = await User.findOne({ email, admin: false })
    if (!user) {
       return next(new CustomError('user not found', 404))

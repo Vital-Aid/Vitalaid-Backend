@@ -34,13 +34,11 @@ export const adduserReview = async (
     return next(new CustomError("failed to add new review"));
   }
   await newreview.save();
-  res
-    .status(200)
-    .json({
-      status: true,
-      message: "review added successfully",
-      data: newreview,
-    });
+  res.status(200).json({
+    status: true,
+    message: "review added successfully",
+    data: newreview,
+  });
 };
 
 export const getUsersReview = async (
@@ -105,9 +103,6 @@ export const getUsersReviewforusers = async (
     .populate("doctorId", "name email phone")
     .lean();
 
-  if (!reviews.length) {
-    return next(new CustomError("Reviews not found"));
-  }
   const doctorIds = reviews.map((review) => review.doctorId._id.toString());
   const drDetails = await DrDetails.find(
     { doctor: { $in: doctorIds } },
@@ -135,18 +130,30 @@ export const getUsersReviewforusers = async (
   });
 };
 
+export const addReview = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const id = req.user?.id;
+  const { doctorId, rating, comment } = req.body;
+  const newReview = new Review({ userId: id, doctorId, rating, comment });
+  await newReview.save();
+  res
+    .status(200)
+    .json({
+      status: true,
+      message: "review added successfully",
+      data: newReview,
+    });
+};
 
-export const addReview = async (req: Request, res: Response, next: NextFunction) => {
-  const id = req.user?.id
-  const { doctorId, rating, comment } = req.body
-  const newReview = new Review({ userId: id, doctorId, rating, comment })
-  await newReview.save()
-  res.status(200).json({ status: true, message: "review added successfully", data: newReview })
-}
-
-
-export const getReview = async (req: Request, res: Response, next: NextFunction) => {
-  const {id} = req.params
+export const getReview = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
 
   if (!id) {
     return next(new CustomError("Doctor id is not provided"));
@@ -160,31 +167,50 @@ export const getReview = async (req: Request, res: Response, next: NextFunction)
     return next(new CustomError("Reviews not found"));
   }
 
-  const userIds = reviews.map(review => review.userId._id.toString());
-  const userDetails = await UserDetails.find({ user: { $in: userIds } }, "user profileImage").lean();
-
+  const userIds = reviews.map((review) => review.userId._id.toString());
+  const userDetails = await UserDetails.find(
+    { user: { $in: userIds } },
+    "user profileImage"
+  ).lean();
 
   const userProfileMap = new Map(
-    userDetails.map(user => [user.user.toString(), user?.profileImage?.originalProfile])
+    userDetails.map((user) => [
+      user.user.toString(),
+      user?.profileImage?.originalProfile,
+    ])
   );
 
-  const updatedReviews = reviews.map(review => ({
+  const updatedReviews = reviews.map((review) => ({
     ...review,
     userId: {
       ...review.userId,
-      profileImage: userProfileMap.get(review.userId._id.toString()) || null
-    }
+      profileImage: userProfileMap.get(review.userId._id.toString()) || null,
+    },
   }));
 
   res.status(200).json({
     status: true,
     message: "Doctor reviews",
-    data: updatedReviews
+    data: updatedReviews,
   });
-}
+};
 
-export const deleteReview = async (req: Request, res: Response, next: NextFunction) => {
-  const { id } = req.params
-  const deletedreview = await Review.findByIdAndUpdate(id, { isDeleted: true }, { new: true })
-  res.status(200).json({ status: true, message: "review deleted successfully", data: deletedreview })
-}
+export const deleteReview = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+  const deletedreview = await Review.findByIdAndUpdate(
+    id,
+    { isDeleted: true },
+    { new: true }
+  );
+  res
+    .status(200)
+    .json({
+      status: true,
+      message: "review deleted successfully",
+      data: deletedreview,
+    });
+};

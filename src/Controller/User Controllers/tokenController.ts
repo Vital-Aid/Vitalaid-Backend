@@ -162,11 +162,6 @@ export const searchDoctors = async (req: Request, res: Response) => {
       .populate<{ doctorId: DoctorPopulated }>("doctorId", "name email phone")
       .lean()) as TokenWithDoctor[];
   
-    if (!tokens || tokens.length === 0) {
-      return next(new CustomError("Tokens not available."));
-    }
-  
-  
     res.status(200).json({
       status: true,
       message: "User's tokens fetched successfully.",
