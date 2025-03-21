@@ -286,3 +286,8 @@ export const logout = async (req: Request, res: Response, next: NextFunction) =>
    
    res.json({ message: 'Logged out successfully' });
 }
+
+
+const refresh=(req:Request,res:Response,next:NextFunction)=>{
+   
+}
