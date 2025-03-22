@@ -228,7 +228,7 @@ export const adminlogin = async (req: Request, res: Response, next: NextFunction
          role: 'Admin',
       },
       process.env.JWT_SECRET as string,
-      { expiresIn: "1m" }
+      { expiresIn: "7d" }
    );
 
    const refreshmentToken = jwt.sign(
