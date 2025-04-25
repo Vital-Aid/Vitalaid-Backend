@@ -55,7 +55,7 @@ app.use("/api/donation",donationRoutes)
 app.use(errorHandler)
 
 
-
+app.options('*', cors(corsOptions));  
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
   const err = new CustomError(`cannot ${req.method} ${req.originalUrl}`, 404)
   next(err)

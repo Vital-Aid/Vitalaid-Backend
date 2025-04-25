@@ -20,12 +20,17 @@ interface DecodedToken {
 }
 
 const userAuth = (req: Request, res: Response, next: NextFunction): void => {
+
+    
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.startsWith('Bearer') ? authHeader.split(' ')[1] : null
+    
+   
 
     if (!token) {
-        const refreshToken = req.cookies?.refreshmentToken
-
+        const refreshToken = req.cookies?.refreshToken
+        console.log(refreshToken);
+        
 
         if (!refreshToken) {
             return next(new CustomError('Refresh token and access token are not available.', 404))

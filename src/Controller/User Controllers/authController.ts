@@ -22,6 +22,7 @@ export const userRegistration = async (
       password: hashedPassword,
       phone,
    });
+   
    await newUser.save();
 
    res.status(200).json({
@@ -65,6 +66,8 @@ export const docterRegistration = async (
 
 export const userlogin = async (req: Request, res: Response, next: NextFunction) => {
    const { email, password } = req.body
+   console.log(email,password);
+   
    const user = await User.findOne({ email, admin: false })
    if (!user) {
       return next(new CustomError('user not found', 404))
@@ -225,7 +228,7 @@ export const adminlogin = async (req: Request, res: Response, next: NextFunction
          role: 'Admin',
       },
       process.env.JWT_SECRET as string,
-      { expiresIn: "1m" }
+      { expiresIn: "7d" }
    );
 
    const refreshmentToken = jwt.sign(
@@ -282,4 +285,9 @@ export const logout = async (req: Request, res: Response, next: NextFunction) =>
    res.clearCookie('accessToken')
    
    res.json({ message: 'Logged out successfully' });
+}
+
+
+const refresh=(req:Request,res:Response,next:NextFunction)=>{
+   
 }
