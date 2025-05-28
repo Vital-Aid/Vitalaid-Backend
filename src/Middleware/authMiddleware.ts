@@ -29,8 +29,6 @@ const userAuth = (req: Request, res: Response, next: NextFunction): void => {
 
     if (!token) {
         const refreshToken = req.cookies?.refreshToken
-        console.log(refreshToken);
-        
 
         if (!refreshToken) {
             return next(new CustomError('Refresh token and access token are not available.', 404))
@@ -78,11 +76,7 @@ const userAuth = (req: Request, res: Response, next: NextFunction): void => {
 const adminAuth = (req: Request, res: Response, next: NextFunction): void => {
 
     userAuth(req, res, () => {
-
-
         if (req.user && req.user.role == 'Admin') {
-
-
             return next()
         } else {
             return next(new CustomError('You are not authorized', 403));
@@ -95,7 +89,6 @@ const doctorAuth = (req: Request, res: Response, next: NextFunction): void => {
     console.log('Doctor auth middleware');
 
     userAuth(req, res, () => {
-
 
         if (req.user && req.user.role == 'Doctor') {
             return next()

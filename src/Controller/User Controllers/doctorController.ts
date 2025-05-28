@@ -88,17 +88,22 @@ export const getallTokensofEachDoctor = async (req: Request, res: Response, next
 
     const doctorId = req.user.id;
     const { date } = req.query;
+    console.log(date);
+    
 
     if (!date) {
         res.status(400).json({ status: false, message: "Date is required" });
         return;
     }
-
+    console.log(doctorId);
+    
     const tokens = await Token.find({
         doctorId,
         date,
         isVerified: true,
     }).populate("patientId", "name email phone profileImage").lean().exec();
+
+console.log(tokens);
 
     if (!tokens || tokens.length === 0) {
         res.status(404).json({ status: false, message: "No tokens found" });
