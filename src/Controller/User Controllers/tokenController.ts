@@ -158,7 +158,7 @@ export const searchDoctors = async (req: Request, res: Response) => {
   ) => {
     
     const id = req?.user?.id;
-    const tokens = (await Token.find({ patientId: id })
+    const tokens = (await Token.find({isVerified:true, patientId: id })
       .populate<{ doctorId: DoctorPopulated }>("doctorId", "name email phone")
       .lean()) as TokenWithDoctor[];
   

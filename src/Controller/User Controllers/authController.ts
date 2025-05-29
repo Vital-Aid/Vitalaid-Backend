@@ -96,7 +96,7 @@ export const userlogin = async (req: Request, res: Response, next: NextFunction)
 
       },
       process.env.JWT_SECRET as string,
-      { expiresIn: "7d" }
+      { expiresIn: "14d" }
    );
     
    await User.findByIdAndUpdate(user._id, { updatedAt: Date.now() }, { new: true });
@@ -157,7 +157,7 @@ export const doctorlogin = async (req: Request, res: Response, next: NextFunctio
          role: 'Doctor',
       },
       process.env.JWT_SECRET as string,
-      { expiresIn: "1m" }
+      { expiresIn: "7d" }
    );
 
    const refreshToken = jwt.sign(
@@ -168,7 +168,7 @@ export const doctorlogin = async (req: Request, res: Response, next: NextFunctio
 
       },
       process.env.JWT_SECRET as string,
-      { expiresIn: "7d" }
+      { expiresIn: "14d" }
    );
 
    // res.cookie('accessToken', token, {
@@ -239,7 +239,7 @@ export const adminlogin = async (req: Request, res: Response, next: NextFunction
 
       },
       process.env.JWT_SECRET as string,
-      { expiresIn: "7d" }
+      { expiresIn: "14d" }
    );
 
    // res.cookie('accessToken', token, {

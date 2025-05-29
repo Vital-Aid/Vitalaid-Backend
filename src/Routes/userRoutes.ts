@@ -18,39 +18,49 @@ const userRoutes = express.Router()
 
 userRoutes
 
-    .get('/getUsers', tryCatch(getUsers))
-    .get('/getUserById/:id', adminAuth, tryCatch(getUserById))
-    .get('/getblockedUsers', tryCatch(getblockedUsers))
-    .post('/blockUser/:_id', tryCatch(blockUser))
-    .post('/addrequest', userAuth, tryCatch(makeRequest))
-    .get('/userrequest', userAuth, tryCatch(getRequestbyuser))
-    .delete('/deleterequest/:equipment', userAuth, tryCatch(removeRequest))
-    .get('/getallequipment', tryCatch(getAllEquipments))
-    .post("/addDetails/:id", userAuth, tryCatch(addDetails))
-    .get("/getdetails/:id", tryCatch(getDetails))
-    .post("/generatereport", tryCatch(generateReport))
-    .get("/getreportof/:id", tryCatch(getReportbyid))
-    .get('/getequipmentbyid/:id', userAuth, tryCatch(getEquipmentBYId))
-    .put('/cancellrequest/:id', userAuth, tryCatch(updaterequest))
-    .post("/sendmessage", tryCatch(newMessages))
-    .post("/sendmsgtodr", tryCatch(msgtodr))
-    .get("/getusermsg", tryCatch(getmsgusr))
-    .post("/sendmsg", tryCatch(postchat))
-    .get("/messageof/:userId/:receiverId", tryCatch(getmsgs))
-    .get("/msgof/:doctorId", tryCatch(getmessagedusers))
-    .put("/editdetailsofthe",userAuth, tryCatch(editDetails))
-    .post('/createtoken', userAuth, validateData(tokenValidationSchema), tryCatch(createToken))
-    .put("/otpverification",userAuth,tryCatch(otpVerification))
-    .get("/gettokenperday/:id", userAuth, tryCatch(gettokenNumber))
-    .get("/getalltokens/:id",userAuth,tryCatch(getallTokens))
-    .get("/getalltoken", userAuth, tryCatch(getallTokenByUser))
-    .put("/canceltoken/:id", userAuth, tryCatch(editTokenStatus))
-    .post("/addreview",userAuth,tryCatch(addReview))
-    .get("/getallreview/:id",userAuth,tryCatch(getReview))
-    .put("/deletereview/:id",userAuth,tryCatch(deleteReview))    
-    .get("/getalltokenofuser/:id", userAuth, tryCatch(getTokenByUser))
-    .get("/getloginedCount", tryCatch(getUsersUpdatedToday))
-    .get("/getuserreview",userAuth,tryCatch(getUsersReviewforusers))
+  .get("/getUsers", tryCatch(getUsers))
+  .get("/getUserById/:id", adminAuth, tryCatch(getUserById))
+  .get("/getblockedUsers", tryCatch(getblockedUsers))
+  .post("/blockUser/:_id", tryCatch(blockUser))
+
+  //equipment route
+  .post("/addrequest", userAuth, tryCatch(makeRequest))
+  .get("/userrequest", userAuth, tryCatch(getRequestbyuser))
+  .delete("/deleterequest/:equipment", userAuth, tryCatch(removeRequest))
+  .get("/getallequipment", tryCatch(getAllEquipments))
+  .get("/getequipmentbyid/:id", userAuth, tryCatch(getEquipmentBYId))
+  .put("/cancellrequest/:id", userAuth, tryCatch(updaterequest))
+
+  //details adding
+  .post("/addDetails/:id", userAuth, tryCatch(addDetails))
+  .get("/getdetails/:id", tryCatch(getDetails))
+  .post("/generatereport", tryCatch(generateReport))
+  .get("/getreportof/:id", tryCatch(getReportbyid))
+
+  .post("/sendmessage", tryCatch(newMessages))
+  .post("/sendmsgtodr", tryCatch(msgtodr))
+  .get("/getusermsg", tryCatch(getmsgusr))
+  .post("/sendmsg", tryCatch(postchat))
+  .get("/messageof/:userId/:receiverId", tryCatch(getmsgs))
+  .get("/msgof/:doctorId", tryCatch(getmessagedusers))
+  .put("/editdetailsofthe", userAuth, tryCatch(editDetails))
+  .post(
+    "/createtoken",
+    userAuth,
+    validateData(tokenValidationSchema),
+    tryCatch(createToken)
+  )
+  .put("/otpverification", userAuth, tryCatch(otpVerification))
+  .get("/gettokenperday/:id", userAuth, tryCatch(gettokenNumber))
+  .get("/getalltokens/:id", userAuth, tryCatch(getallTokens))
+  .get("/getalltoken", userAuth, tryCatch(getallTokenByUser))
+  .put("/canceltoken/:id", userAuth, tryCatch(editTokenStatus))
+  .post("/addreview", userAuth, tryCatch(addReview))
+  .get("/getallreview/:id", userAuth, tryCatch(getReview))
+  .put("/deletereview/:id", userAuth, tryCatch(deleteReview))
+  .get("/getalltokenofuser/:id", userAuth, tryCatch(getTokenByUser))
+  .get("/getloginedCount", tryCatch(getUsersUpdatedToday))
+  .get("/getuserreview", userAuth, tryCatch(getUsersReviewforusers));
 
 
 export default userRoutes;
