@@ -25,6 +25,7 @@ const userAuth = (req: Request, res: Response, next: NextFunction): void => {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.startsWith('Bearer') ? authHeader.split(' ')[1] : null
     
+   console.log(token);
    
 
     if (!token) {
@@ -89,6 +90,8 @@ const doctorAuth = (req: Request, res: Response, next: NextFunction): void => {
     console.log('Doctor auth middleware');
 
     userAuth(req, res, () => {
+        console.log(req.user);
+        
 
         if (req.user && req.user.role == 'Doctor') {
             return next()
