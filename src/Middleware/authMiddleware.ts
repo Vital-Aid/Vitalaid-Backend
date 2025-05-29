@@ -25,6 +25,7 @@ const userAuth = (req: Request, res: Response, next: NextFunction): void => {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.startsWith('Bearer') ? authHeader.split(' ')[1] : null
     
+   console.log(token);
    
 
     if (!token) {

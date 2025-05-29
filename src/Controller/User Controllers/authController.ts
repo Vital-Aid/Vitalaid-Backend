@@ -85,7 +85,7 @@ export const userlogin = async (req: Request, res: Response, next: NextFunction)
          role: 'User',
       },
       process.env.JWT_SECRET as string,
-      { expiresIn: "1m" }
+      { expiresIn: "7d" }
    );
 
    const refreshmentToken = jwt.sign(
