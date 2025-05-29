@@ -90,8 +90,6 @@ const doctorAuth = (req: Request, res: Response, next: NextFunction): void => {
     console.log('Doctor auth middleware');
 
     userAuth(req, res, () => {
-        console.log(req.user);
-        
 
         if (req.user && req.user.role == 'Doctor') {
             return next()
